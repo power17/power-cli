@@ -6,6 +6,7 @@
     "custom",
     "cli"
   ],
+ 
   "bin": {
     "power": "lib/index.js"
   },
@@ -21,10 +22,11 @@
     "lib"
   ],
   "publishConfig": {
-    "registry": "https://registry.npmmirror.com/"
+    "registry": "https://registry.npmmirror.com/",
+    "access": "public"
   },
   "scripts": {
     "test": "node ./__tests__/core.test.js"
   },
-  "gitHead": "93db0b3e3b77d7effd0722f380d92a6393d04101"
+  "gitHead": "0b871395b10d61a32b257a2b233bc68fb1be04e9"
 }
