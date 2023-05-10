@@ -1,6 +1,6 @@
 {
   "name": "@power137/core",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "power-cli core",
   "keywords": [
     "custom",
@@ -24,6 +24,6 @@
     "test": "node ./__tests__/core.test.js"
   },
   "dependencies": {
-    "@power-cli/utils": "^1.0.0"
+    "@power-cli/utils": "^0.0.1"
   }
 }
