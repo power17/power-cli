@@ -1,6 +1,6 @@
 {
   "name": "@power137/core",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "power-cli core",
   "keywords": [
     "custom",
@@ -25,8 +25,6 @@
   },
   "scripts": {
     "test": "node ./__tests__/core.test.js"
-  },
-  "dependencies": {
   },
   "gitHead": "ac410fefb5b09c0023387f0932b8fe12da612cba"
 }
