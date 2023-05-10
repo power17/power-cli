@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/utils",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "a utils of power-cli",
   "author": "powr <1410837981@qq.com>",
   "homepage": "",
@@ -18,5 +18,6 @@
   },
   "scripts": {
     "test": "node ./__tests__/@power-cli/utils.test.js"
-  }
+  },
+  "gitHead": "c242d846256a8b9e046dbbfbaec02c6bd7c60e92"
 }

@@ -1,6 +1,6 @@
 {
   "name": "@power137/core",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "power-cli core",
   "keywords": [
     "custom",
@@ -25,5 +25,6 @@
   },
   "dependencies": {
     "@power-cli/utils": "^0.0.1"
-  }
+  },
+  "gitHead": "c242d846256a8b9e046dbbfbaec02c6bd7c60e92"
 }
