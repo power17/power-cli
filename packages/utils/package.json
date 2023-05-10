@@ -19,5 +19,5 @@
   "scripts": {
     "test": "node ./__tests__/@power-cli/utils.test.js"
   },
-  "gitHead": "c242d846256a8b9e046dbbfbaec02c6bd7c60e92"
+  "gitHead": "ac410fefb5b09c0023387f0932b8fe12da612cba"
 }
