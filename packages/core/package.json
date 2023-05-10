@@ -1,0 +1,29 @@
+{
+  "name": "@power137/core",
+  "version": "1.0.0",
+  "description": "power-cli core",
+  "keywords": [
+    "custom",
+    "cli"
+  ],
+  "author": "powr <1410837981@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/core.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmmirror.com/"
+  },
+  "scripts": {
+    "test": "node ./__tests__/core.test.js"
+  },
+  "dependencies": {
+    "@power-cli/utils": "^1.0.0"
+  }
+}
