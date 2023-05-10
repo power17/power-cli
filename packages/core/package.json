@@ -1,11 +1,14 @@
 {
   "name": "@power137/core",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "power-cli core",
   "keywords": [
     "custom",
     "cli"
   ],
+  "bin": {
+    "power": "lib/index.js"
+  },
   "author": "powr <1410837981@qq.com>",
   "homepage": "",
   "license": "MIT",
@@ -24,7 +27,6 @@
     "test": "node ./__tests__/core.test.js"
   },
   "dependencies": {
-    "@power-cli/utils": "^0.0.1"
   },
   "gitHead": "ac410fefb5b09c0023387f0932b8fe12da612cba"
 }
