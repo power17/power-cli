@@ -1,0 +1,35 @@
+{
+  "name": "@power-cli/core",
+  "version": "1.0.8",
+  "description": "power-cli core",
+  "keywords": [
+    "custom",
+    "cli"
+  ],
+  "bin": {
+    "power": "bin/index.js"
+  },
+  "author": "powr <1410837981@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/core.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "dependencies": {
+    "@power-cli/core": "^1.0.8",
+    "@power-cli/utils": "file:../../utils/utils",
+    "import-local": "^3.1.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node ./__tests__/core.test.js"
+  },
+  "gitHead": "85a040f9bac76bd9602a2583ebf8f3f3c1ef3d17"
+}
