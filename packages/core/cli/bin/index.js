@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 const importLocal = require('import-local')
-console.log(__filename)
+console.log(__filename, 'filename')
 console.log(process.cwd() , 'cwd')
 
 if(importLocal(__filename)) {
@@ -8,7 +8,6 @@ if(importLocal(__filename)) {
 }else{
   require('../lib')(process.argv.slice(2))
 
-  // jfls
 
   
 }
