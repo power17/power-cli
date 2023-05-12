@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/utils",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "a utils of power-cli",
   "author": "powr <1410837981@qq.com>",
   "homepage": "",
@@ -19,7 +19,7 @@
   "scripts": {
     "test": "node ./__tests__/@power-cli/utils.test.js"
   },
-  "gitHead": "910fbf97aa7e1a506a62db3f91b920d66dfc4dd2",
+  "gitHead": "894a6ae353eaa95b0932b788f97a5e302a60c4d2",
   "dependencies": {
     "import-local": "^3.1.0",
     "npmlog": "^7.0.1"
