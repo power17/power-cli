@@ -19,8 +19,7 @@
   },
   "dependencies": {
     "@power-cli/core": "^1.0.9",
-    "@power-cli/utils": "file:../../utils/utils",
-    "import-local": "^3.1.0"
+    "@power-cli/utils": "file:../../utils/utils"
   },
   "files": [
     "lib"
@@ -30,6 +29,10 @@
   },
   "scripts": {
     "test": "node ./__tests__/core.test.js"
+  },
+  "exports": {
+    "./bin/index.js": "./bin/index.js"
+
   },
   "gitHead": "85a040f9bac76bd9602a2583ebf8f3f3c1ef3d17"
 }
