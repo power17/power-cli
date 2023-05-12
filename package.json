@@ -14,7 +14,7 @@
   },
   "workspaces": [
     "packages/**"
-
+    
   ],
   "dependencies": {
     "import-local": "^3.1.0",

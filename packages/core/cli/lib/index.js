@@ -29,12 +29,20 @@ async function core(argv) {
     checkInputArgs()
     // 检查环境变量
     checkEnv()
+    // 检查最cli工具新版本号，提示用户更新？
+    checkVersionUpdate()
 
 
     }catch(e){
       log.error(e.message)
     }
     
+}
+function checkVersionUpdate() {
+  // 获取当前版本
+  const currentVersion = pkg.version
+  const pkgName = pkg.name
+  // 调用NPMApi获取所有版本号
 
 }
 function checkEnv() {
@@ -73,7 +81,7 @@ function checkInputArgs() {
     process.env.LOCAL_LEVEL = 'info'
   }
   log.level = process.env.LOCAL_LEVEL
-  log.verbose('debug: 开始调试')
+  log.verbose('debug: 开始调试模式')
 }
 //检查用户主目录
 function checkUserHome(pathExists) {
