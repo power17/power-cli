@@ -9,6 +9,9 @@ npm link pkg
 lerna publish from-package
 # 改掉文件后强制发布新版本
 lerna publish --force-publish
+# 安装依赖
+lerna add semver --scope @power-cli/core
 
 ```
-
+# 注意点
+- 很多包新版本的package.json中设置了type:’module’，commonjs也可以引入esmodule，用动态import()方法

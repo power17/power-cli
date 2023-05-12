@@ -1,0 +1,29 @@
+{
+  "name": "@power-cli/log",
+  "version": "1.0.13",
+  "description": "log",
+  "author": "powr <1410837981@qq.com>",
+  "homepage": "https://github.com/power17/power-cli#readme",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/power17/power-cli.git"
+  },
+  "scripts": {
+    "test": "node ./__tests__/@power-cli/log.test.js"
+  },
+  "bugs": {
+    "url": "https://github.com/power17/power-cli/issues"
+  }
+}
