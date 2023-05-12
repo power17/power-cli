@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/core",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "power-cli core",
   "keywords": [
     "custom",
@@ -18,7 +18,7 @@
     "test": "__tests__"
   },
   "dependencies": {
-    "@power-cli/core": "^1.0.9",
+    "@power-cli/core": "^1.0.10",
     "@power-cli/utils": "file:../../utils/utils"
   },
   "files": [
@@ -32,7 +32,6 @@
   },
   "exports": {
     "./bin/index.js": "./bin/index.js"
-
   },
   "gitHead": "85a040f9bac76bd9602a2583ebf8f3f3c1ef3d17"
 }
