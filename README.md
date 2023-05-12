@@ -15,3 +15,4 @@ lerna add semver --scope @power-cli/core
 ```
 # 注意点
 - 很多包新版本的package.json中设置了type:’module’，commonjs也可以引入esmodule，用动态import()方法
+
