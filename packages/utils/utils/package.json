@@ -19,7 +19,7 @@
   "scripts": {
     "test": "node ./__tests__/@power-cli/utils.test.js"
   },
-  "gitHead": "85a040f9bac76bd9602a2583ebf8f3f3c1ef3d17",
+  "gitHead": "910fbf97aa7e1a506a62db3f91b920d66dfc4dd2",
   "dependencies": {
     "import-local": "^3.1.0",
     "npmlog": "^7.0.1"

@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@power-cli/core": "^1.0.11",
-    "@power-cli/utils": "file:../../utils/utils",
+    "@power-cli/utils": "^1.0.11",
     "import-local": "^3.1.0",
     "npmlog": "^7.0.1"
   },
@@ -35,5 +35,5 @@
   "exports": {
     "./bin/index.js": "./bin/index.js"
   },
-  "gitHead": "85a040f9bac76bd9602a2583ebf8f3f3c1ef3d17"
+  "gitHead": "910fbf97aa7e1a506a62db3f91b920d66dfc4dd2"
 }
