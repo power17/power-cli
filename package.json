@@ -13,7 +13,13 @@
     "access": "public"
   },
   "workspaces": [
-    "packages/**"
+    "packages/*",
+    "packages/core/*",
+    "packages/commands/*",
+    "packages/models/*",
+    "packages/utils/*"
+
+    
     
   ],
   "dependencies": {

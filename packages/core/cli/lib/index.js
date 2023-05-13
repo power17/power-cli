@@ -42,6 +42,8 @@ function checkVersionUpdate() {
   // 获取当前版本
   const currentVersion = pkg.version
   const pkgName = pkg.name
+  const { getNpmInfo } = require('@power-cli/get-npm-info')
+  getNpmInfo(pkgName)
   // 调用NPMApi获取所有版本号
 
 }
