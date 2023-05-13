@@ -19,8 +19,8 @@
   },
   "dependencies": {
     "@power-cli/core": "^1.0.14",
-    "@power-cli/get-npm-info": "file:../../utils/get-npm-info",
-    "@power-cli/log": "file:../../utils/log",
+    "@power-cli/get-npm-info": "^1.0.14",
+    "@power-cli/log": "^1.0.14",
     "@power-cli/utils": "^1.0.13",
     "colors": "^1.4.0",
     "dotenv": "^16.0.3",
@@ -44,5 +44,5 @@
   "exports": {
     "./bin/index.js": "./bin/index.js"
   },
-  "gitHead": "894a6ae353eaa95b0932b788f97a5e302a60c4d2"
+  "gitHead": "fed6cabb258c4bec4d99f7234e00e96070fb6239"
 }
