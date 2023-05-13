@@ -4,7 +4,10 @@
   "version": "1.0.13",
   "npmClient": "true",
   "workspaces": [
-    "packages/*"
+    "packages/core/*",
+    "packages/commands/*",
+    "packages/models/*",
+    "packages/utils/*"
 
   ]
 }
