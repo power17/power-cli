@@ -1,13 +1,12 @@
 {
   "$schema": "node_modules/lerna/schemas/lerna-schema.json",
   "useWorkspaces": true,
-  "version": "1.0.13",
+  "version": "1.0.14",
   "npmClient": "true",
   "workspaces": [
     "packages/core/*",
     "packages/commands/*",
     "packages/models/*",
     "packages/utils/*"
-
   ]
 }
