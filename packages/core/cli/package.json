@@ -43,5 +43,5 @@
   "exports": {
     "./bin/index.js": "./bin/index.js"
   },
-  "gitHead": "73b3ef896e5aac97897be23e461cc452ce3caf3e"
+  "gitHead": "db009a74025e0d2df30089bc63da03c60f0bd41a"
 }
