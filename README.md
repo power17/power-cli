@@ -11,8 +11,17 @@ lerna publish from-package
 lerna publish --force-publish
 # 安装依赖
 lerna add semver --scope @power-cli/core
+# 指向本地 
+lerna link convert
 
 ```
 # 注意点
-- 很多包新版本的package.json中设置了type:’module’，commonjs也可以引入esmodule，用动态import()方法
+- 1、很多包新版本的package.json中设置了type:’module’，commonjs也可以引入esmodule，用动态import()方法
+- 2、lerna ERR! E401 [UNAUTHORIZED] Login first  
+- 更改为公用包才可以发布
+```js
+ "publishConfig": {
+    "access": "public"
+  },
+  ```
 

@@ -18,13 +18,12 @@
     "packages/commands/*",
     "packages/models/*",
     "packages/utils/*"
-
-    
-    
   ],
   "dependencies": {
-    "import-local": "^3.1.0",
-    "npmlog": "^7.0.1"
+    "@power-cli/core": "file:packages/core/cli",
+    "@power-cli/get-npm-info": "file:packages/utils/get-npm-info",
+    "@power-cli/log": "file:packages/utils/log",
+    "@power-cli/utils": "file:packages/utils/utils"
   },
   "devDependencies": {
     "lerna": "^6.6.2"

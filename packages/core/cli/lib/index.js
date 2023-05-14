@@ -7,8 +7,10 @@ const colors = require('colors/safe')
 const userHome = require('user-home')
 const minimist = require('minimist')
 const dotenv = require('dotenv')
+const commander =require('commander')
+const program  = new commander.Command()
+const init = require('@power-cli/init')
 let pathExists
-
 let argv
 
 async function core(argv) {
@@ -25,18 +27,62 @@ async function core(argv) {
     // 检查用户主目录
     checkUserHome(pathExists)
    
-    // 检查用户输入
-    checkInputArgs()
+    // debug:检查用户输入（调试模式）
+    // checkInputArgs()
     // 检查环境变量
     checkEnv()
     // 检查最cli工具新版本号，提示用户更新？
     checkVersionUpdate()
+    // 注册命令
+    registerCommand()
 
 
     }catch(e){
       log.error(e.message)
     }
     
+}
+function registerCommand() {
+
+  // 初始化
+  program
+    .name(Object.keys(pkg.bin)[0])
+    .usage('<command> [options]')
+    .version(pkg.version)
+    .option('-d --debug', '是否开启调试模式', false)
+
+  // 命令注册  
+  program
+    .command('init [projectName]') 
+    .option('-f, --force', '是否强制初始化项目')
+    .action(init)
+
+  // 调试模式 
+  program.on('option:debug', () => {
+    if(program.opts().debug) {
+      process.env.LOCAL_LEVEL = 'verbose'
+    }else{
+      process.env.LOCAL_LEVEL = 'info'
+    }
+    log.level = process.env.LOCAL_LEVEL
+    log.verbose('开启调试模式')
+  })
+  // 对未知命令的监听
+  program.on('command:*', (obj) => {
+    log.info('未知命令', obj[0])
+    const availableCommand = program.commands.map(command => command.name())
+    log.info('可用命令：', availableCommand.join(','))
+    // 未输入命令显示帮助文档
+    if(program.args?.length < 1) {
+      program.outputHelp()
+      // 输入空行
+      console.log()
+    }
+  })    
+
+ 
+    
+  program.parse(process.argv)
 }
 async function checkVersionUpdate() {
   // 获取当前版本
@@ -75,7 +121,7 @@ function checkEnv() {
   }
   createDefaultConfig()
 
-  log.info('环境变量路径：', process.env.CLI_HOME_PATH)
+  // log.info('环境变量路径：', process.env.CLI_HOME_PATH)
   
 }
 

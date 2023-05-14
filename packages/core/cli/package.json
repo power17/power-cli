@@ -18,10 +18,12 @@
     "test": "__tests__"
   },
   "dependencies": {
-    "@power-cli/get-npm-info": "^1.0.25",
-    "@power-cli/log": "^1.0.25",
-    "@power-cli/utils": "^1.0.25",
+    "@power-cli/get-npm-info": "file:../../utils/get-npm-info",
+    "@power-cli/log": "file:../../utils/log",
+    "@power-cli/utils": "file:../../utils/utils",
+    "@power-cli/init": "file:../../utils/init",
     "colors": "^1.4.0",
+    "commander": "^10.0.1",
     "dotenv": "^16.0.3",
     "import-local": "^3.1.0",
     "minimist": "^1.2.8",
