@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/core",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "description": "power-cli core",
   "keywords": [
     "custom",
@@ -18,9 +18,9 @@
     "test": "__tests__"
   },
   "dependencies": {
-    "@power-cli/get-npm-info": "^1.0.22",
-    "@power-cli/log": "^1.0.22",
-    "@power-cli/utils": "^1.0.22",
+    "@power-cli/get-npm-info": "^1.0.23",
+    "@power-cli/log": "^1.0.23",
+    "@power-cli/utils": "^1.0.23",
     "colors": "^1.4.0",
     "dotenv": "^16.0.3",
     "import-local": "^3.1.0",
