@@ -38,12 +38,16 @@ async function core(argv) {
     }
     
 }
-function checkVersionUpdate() {
+async function checkVersionUpdate() {
   // 获取当前版本
   const currentVersion = pkg.version
   const pkgName = pkg.name
-  const { getNpmInfo } = require('@power-cli/get-npm-info')
-  getNpmInfo(pkgName)
+  const { getNewVersion } = require('@power-cli/get-npm-info')
+  // const npmVersions  = await getNpmVersion(pkgName)
+  const newVersion = await getNewVersion(pkgName)
+  if(newVersion && semver.gt(newVersion, currentVersion)) {
+    log.info('更新提示：', colors.yellow(`请手动更新${pkgName},当前版本：${currentVersion},最新版本：${newVersion}`))
+  }
   // 调用NPMApi获取所有版本号
 
 }

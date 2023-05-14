@@ -1,12 +1,12 @@
 'use strict';
 const path = require('path')
 const axios = require('axios')
+const semver = require('semver');
 async function getNpmInfo(pkgName, registry = '') {
   if(!pkgName) {return}
   const registryUrl = registry || getDefaultRegistry()
   const npmInfoUrl = path.join(registryUrl, pkgName)
   const res = await axios.get(npmInfoUrl)
-  console.log( res,'res', npmInfoUrl)
   try{
     if(res.status === 200) {
       return res.data
@@ -19,8 +19,30 @@ async function getNpmInfo(pkgName, registry = '') {
 }
 function getDefaultRegistry(isOrigin = false) {
   return isOrigin ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org'
-
-
+}
+async function getNpmVersion(pkgName, registry) {
+  const data = await getNpmInfo(pkgName) || {}
+  // console.log('data', data)
+  return data.versions? Object.keys(data.versions) : ""
+}
+async function getNewVersion(pkgName, registry) {
+  const data = await getNpmInfo(pkgName) || {}
+  // console.log('data', data)
+  return data['dist-tags']?.latest
+}
+// 获取满足版本号 （废弃）
+function getSemverVersion(baseVersion, versions = []){
+  versions = versions.filter(version => semver.satisfies(version, `^${baseVersion}`))
+  // console.log(ver)
+  console.log(versions)
+  return versions
 }
 
-module.exports = {getNpmInfo};
+
+
+module.exports = {
+  getNpmInfo,
+  getNpmVersion,
+  getSemverVersion,
+  getNewVersion
+};
