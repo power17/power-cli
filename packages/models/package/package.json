@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/package",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "description": "> TODO: description",
   "author": "powr <1410837981@qq.com>",
   "homepage": "https://github.com/power17/power-cli#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/power17/power-cli/issues"
   },
   "dependencies": {
-    "@power-cli/utils": "file:../../utils/utils",
     "@power-cli/get-npm-info": "file:../../utils/get-npm-info",
+    "@power-cli/utils": "file:../../utils/utils",
     "npminstall": "^7.8.0",
     "pkg-dir": "^5.0.0"
   }
