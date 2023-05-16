@@ -9,6 +9,8 @@ npm link pkg
 lerna publish from-package
 # 改掉文件后强制发布新版本
 lerna publish --force-publish
+# 创建包
+lerna create  @power-cli/exec  packages/core
 # 安装依赖
 lerna add semver --scope @power-cli/core
 # 指向本地 

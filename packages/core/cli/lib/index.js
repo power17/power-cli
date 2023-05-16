@@ -4,43 +4,51 @@ const log = require('@power-cli/log')
 const constant = require('./const')
 const semver = require('semver')
 const colors = require('colors/safe')
-const userHome = require('user-home')
+const { homedir } = require('os')
 const minimist = require('minimist')
 const dotenv = require('dotenv')
 const commander =require('commander')
 const program  = new commander.Command()
 const init = require('@power-cli/init')
-let pathExists
+const exec = require('@power-cli/exec')
+const fs = require('fs')
+const userHome = homedir()
+
 let argv
 
 async function core(argv) {
   try{
-    // 检测cli版本
-    checkPkgVersion()
-    //  检测node最低版本号
-    checkNodeVersion()
-    // 检查超级管理员, 如果是超级管理员就降级
-    checkRoot()
-    
-    pathExistsObj = await import('path-exists')
-    pathExists = pathExistsObj.pathExistsSync
-    // 检查用户主目录
-    checkUserHome(pathExists)
-   
-    // debug:检查用户输入（调试模式）
-    // checkInputArgs()
-    // 检查环境变量
-    checkEnv()
-    // 检查最cli工具新版本号，提示用户更新？
-    checkVersionUpdate()
+    //准备阶段
+    prepare()
+
     // 注册命令
     registerCommand()
-
-
     }catch(e){
       log.error(e.message)
+      if(program.opts().debug) {
+        console.log(e)
+      }
     }
     
+}
+// 脚手脚初始化阶段
+async function prepare() {
+
+   // 检测cli版本
+   checkPkgVersion()
+   //  检测node最低版本号
+   checkNodeVersion()
+   // 检查超级管理员, 如果是超级管理员就降级
+   checkRoot()
+   
+   // 检查用户主目录
+   checkUserHome()
+  
+   // 检查环境变量
+   checkEnv()
+ 
+   // 检查最cli工具新版本号，提示用户更新？
+   checkVersionUpdate()
 }
 function registerCommand() {
 
@@ -50,12 +58,12 @@ function registerCommand() {
     .usage('<command> [options]')
     .version(pkg.version)
     .option('-d --debug', '是否开启调试模式', false)
-
+    .option('-tp --targetPath <targetPath>', '是否开启本地调试路径','')
   // 命令注册  
   program
     .command('init [projectName]') 
     .option('-f, --force', '是否强制初始化项目')
-    .action(init)
+    .action(exec)
 
   // 调试模式 
   program.on('option:debug', () => {
@@ -79,6 +87,10 @@ function registerCommand() {
       console.log()
     }
   })    
+  // 监听targetPath
+  program.on('option:targetPath', function() {
+    process.env.CLI_TARGET_PATH = program.opts().targetPath
+  })
 
  
     
@@ -107,13 +119,14 @@ function checkEnv() {
     }else{
       cliConfig['cliHome'] = path.join(userHome,constant.DEFAULT_CLI_HOME)
     }
+   
     process.env.CLI_HOME_PATH = cliConfig['cliHome']
     return cliConfig
   }
   // /usr/power/.env存在
   const config = dotenv.config({path: path.resolve(userHome, '.env')})
   const dotenvPath = path.resolve(userHome, '.env')
-  if(pathExists(dotenvPath)) {
+  if(fs.existsSync(dotenvPath)) {
     dotenv.config({
       path: dotenvPath
     })
@@ -125,19 +138,10 @@ function checkEnv() {
   
 }
 
-function checkInputArgs() {
-  argv = minimist(process.argv.slice(2))
-  if(argv?.debug) {
-    process.env.LOCAL_LEVEL = 'verbose'
-  }else {
-    process.env.LOCAL_LEVEL = 'info'
-  }
-  log.level = process.env.LOCAL_LEVEL
-  log.verbose('debug: 开始调试模式')
-}
+
 //检查用户主目录
-function checkUserHome(pathExists) {
-  if(!userHome || !pathExists(userHome)) {
+function checkUserHome() {
+  if(!userHome || !fs.existsSync(userHome)) {
     throw new Error(log.notice('当前登录用户主目录不存在'))
   }
   
