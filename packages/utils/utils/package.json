@@ -22,6 +22,7 @@
   "gitHead": "cfcb55963a9ee67eff1be68af095ba4def45b678",
   "dependencies": {
     "import-local": "^3.1.0",
-    "npmlog": "^7.0.1"
+    "npmlog": "^7.0.1",
+    "ora": "^5.0.0"
   }
 }

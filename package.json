@@ -20,9 +20,13 @@
     "packages/utils/*"
   ],
   "dependencies": {
+    "@power-cli/command": "file:packages/models/command",
     "@power-cli/core": "file:packages/core/cli",
+    "@power-cli/exec": "file:packages/core/exec",
     "@power-cli/get-npm-info": "file:packages/utils/get-npm-info",
+    "@power-cli/init": "file:packages/commands/init",
     "@power-cli/log": "file:packages/utils/log",
+    "@power-cli/package": "file:packages/models/package",
     "@power-cli/utils": "file:packages/utils/utils"
   },
   "devDependencies": {

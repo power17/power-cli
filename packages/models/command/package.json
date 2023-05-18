@@ -1,7 +1,7 @@
 {
-  "name": "@power-cli/init",
+  "name": "@power-cli/command",
   "version": "1.0.26",
-  "description": "project init command",
+  "description": "> TODO: description",
   "author": "powr <1410837981@qq.com>",
   "homepage": "https://github.com/power17/power-cli#readme",
   "license": "MIT",
@@ -21,17 +21,12 @@
     "url": "git+https://github.com/power17/power-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@power-cli/init.test.js"
+    "test": "node ./__tests__/@power-cli/command.test.js"
   },
   "bugs": {
     "url": "https://github.com/power17/power-cli/issues"
   },
   "dependencies": {
-    "@power-cli/command": "file:../../models/command",
-    "@power-cli/log": "file:../../utils/log",
-    "@power-cli/request": "file:../../utils/request",
-    "@power-cli/utils": "file:../../utils/utils",
-    "inquirer": "^8.0.0",
-    "semver": "^7.5.1"
+    "@power-cli/log": "file:../../utils/log"
   }
 }

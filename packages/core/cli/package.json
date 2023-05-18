@@ -2,6 +2,7 @@
   "name": "@power-cli/core",
   "version": "1.0.26",
   "description": "power-cli core",
+  "repository": "https://github.com/power17/power-cli",
   "keywords": [
     "custom",
     "cli"
