@@ -24,13 +24,46 @@ class InitCommand extends Command {
     // console.log(this.projectName, this.force,1111)
   }
   async exec() {
-    // 判断目录是否为空
+
     try {
+      // 初始化   判断目录是否为空
       await this.prepare()
       log.verbose('projectInfo', this.projectInfo)
+
       if (this.projectInfo) {
         // 下载模版
         await this.downloadTemplate()
+        log.verbose('templateInfo', this.templateInfo)
+        if (!this.templateInfo) throw new Error('项目模板信息不存在')
+        if (this.templateInfo.type === 'normal') {
+          if (fs.existsSync(this.templateNpm.storePath)) {
+            const spinner = spinnerStart('开始安装')
+            try {
+              fs.cpSync(
+                this.templateNpm.storePath,
+                process.cwd(),
+
+                {
+                  recursive: true, //拷贝文件
+                  dereference: true, // 拷贝真实目录
+                  force: false,
+                })
+            } catch (error) {
+
+            } finally {
+              spinner.stop()
+              log.success('模版安装成功')
+            }
+
+          } else {
+            throw new Error('项目模版不存在')
+          }
+        } else if (this.templateInfo.type === 'custom') {
+          console.log('自定义安装')
+        } else {
+          throw new Error('无法识别项目类型')
+        }
+
       }
     } catch (e) {
       log.error(e.message)
@@ -39,29 +72,32 @@ class InitCommand extends Command {
 
 
   }
+  async insatallTemplate() {
+
+  }
   async downloadTemplate() {
 
     const targetPath = path.resolve(process.env.CLI_HOME_PATH, 'template')
     const storePath = path.resolve(targetPath, 'node_modules')
     // log.verbose('target, store', targetPath, storeDir)
-    const templateInfo = this.template.find(v => v.npmName === this.projectInfo.npmName)
+    this.templateInfo = this.template.find(v => v.npmName === this.projectInfo.npmName)
 
-    const templateNpm = new Package({
+    this.templateNpm = new Package({
       targetPath,
       storePath,
       packageName: this.projectInfo?.npmName,
       packageVersion: this.projectInfo?.projectVersion
     })
-    log.verbose('templateNpm', templateNpm)
-    if (await templateNpm.exists()) {
+    log.verbose('templateNpm', this.templateNpm)
+    if (await this.templateNpm.exists()) {
       const spinner = spinnerStart('正在更新版本。。。。。')
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      await templateNpm.update()
+      await this.templateNpm.update()
       spinner.stop()
     } else {
       const spinner = spinnerStart('正在下载。。。。。')
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      await templateNpm.insatall()
+      await this.templateNpm.insatall()
       spinner.stop()
 
 
@@ -69,7 +105,7 @@ class InitCommand extends Command {
 
       // spinner.stop()
     }
-    console.log(templateNpm, 'templateNpm')
+    // console.log(templateNpm, 'templateNpm')
 
   }
   async prepare() {
@@ -101,7 +137,7 @@ class InitCommand extends Command {
         if (isContinue) {
           fs.rm(this.projectPath, { recursive: true }, (err) => {
             if (err) throw err;
-            console.log('remove complete!');
+            log.verbose('remove complete!');
           })
 
         }
