@@ -76,7 +76,6 @@ class Package {
 
       });
       this.packageVersion = lastVersion
-
     }
   }
   // 获取缓存包的版本
