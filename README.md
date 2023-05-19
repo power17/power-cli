@@ -12,7 +12,7 @@ lerna publish --force-publish
 # 创建包
 lerna create  @power-cli/exec  packages/core
 # 安装依赖
-lerna add semver --scope @power-cli/core
+lerna add semver --scope @power-cli/core  [--dev]
 # 指向本地 
 lerna link convert
 

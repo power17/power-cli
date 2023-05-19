@@ -4,6 +4,8 @@ const { homedir } = require('os')
 const path = require('path')
 const inquirer = require('inquirer')
 const semver = require('semver')
+const ejs = require('ejs')
+const { glob } = require('glob')
 const log = require('@power-cli/log')
 const Command = require('@power-cli/command')
 const { spinnerStart } = require('@power-cli/utils')
@@ -38,22 +40,11 @@ class InitCommand extends Command {
         if (this.templateInfo.type === 'normal') {
           if (fs.existsSync(this.templateNpm.storePath)) {
             const spinner = spinnerStart('开始安装')
-            try {
-              fs.cpSync(
-                this.templateNpm.storePath,
-                process.cwd(),
-
-                {
-                  recursive: true, //拷贝文件
-                  dereference: true, // 拷贝真实目录
-                  force: false,
-                })
-            } catch (error) {
-
-            } finally {
-              spinner.stop()
-              log.success('模版安装成功')
-            }
+            await this.normalInstall()
+            spinner.stop()
+            log.success('模版安装成功')
+            // ejs渲染
+            await this.ejsRender()
 
           } else {
             throw new Error('项目模版不存在')
@@ -67,13 +58,53 @@ class InitCommand extends Command {
       }
     } catch (e) {
       log.error(e.message)
+      if (process.env.LOCAL_LEVEL === 'verbose') {
+        console.log(e)
+      }
     }
+  }
+  async ejsRender() {
 
-
+    const dir = path.resolve(process.cwd(), this.projectName)
+    const files = await glob('**', {
+      cwd: dir,
+      ignore: ['node_modules/**', 'public/**'],
+      nodir: true
+    })
+    console.log('file', files)
+    await Promise.all(files.map((file => {
+      const filePath = path.resolve(dir, file)
+      this.projectInfo.className = this.projectInfo.projectName
+      this.projectInfo.version = this.projectInfo.projectVersion
+      ejs.renderFile(filePath, this.projectInfo, {}, function (err, str) {
+        if (err) throw new Error(err.message)
+        fs.writeFileSync(filePath, str)
+        console.log(str)
+      })
+    })))
+    // console.log(file)
 
   }
-  async insatallTemplate() {
-
+  async normalInstall() {
+    try {
+      console.log(this.projectName, 'this.projectName')
+      const copyPath = path.resolve(this.templateNpm.storePath, this.templateNpm.pkgName, 'template')
+      const targetPath = path.resolve(process.cwd(), this.projectName)
+      fs.mkdirSync(targetPath)
+      fs.cpSync(
+        copyPath,
+        targetPath,
+        {
+          recursive: true, //拷贝文件夹
+          dereference: true, // 拷贝真实目录
+          force: false,
+        })
+    } catch (e) {
+      log.error(e.message)
+      if (process.env.LOCAL_LEVEL === 'verbose') {
+        console.log(e)
+      }
+    }
   }
   async downloadTemplate() {
 
@@ -147,6 +178,9 @@ class InitCommand extends Command {
 
       } catch (e) {
         log.error(e.message)
+        if (process.env.LOCAL_LEVEL === 'verbose') {
+          console.log(e)
+        }
       }
 
     }
@@ -172,6 +206,7 @@ class InitCommand extends Command {
       projectInfo = await inquirer.prompt([{
         type: 'input',
         name: 'projectName',
+        default: this.projectName,
         message: '请输入项目名称',
         validate(v) {
           const r = /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/
