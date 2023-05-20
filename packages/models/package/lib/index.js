@@ -61,7 +61,6 @@ class Package {
     const lastVersion = await getNewVersion(this.pkgName)
     const chacheVersion = this.getSpecificCacheFilePath()
     if (lastVersion !== chacheVersion) {
-      console.log('gengxin')
       await npminstall({
         // install root dir
         root: path.resolve(this.targetPath),
@@ -84,6 +83,7 @@ class Package {
     return pkg.version
   }
   getRootFilePath() {
+    console.log(this.targetPath)
     const _getRootFile = (targetPath) => {
       // 找到package.json的目录
       const dir = pkgDir.sync(targetPath)

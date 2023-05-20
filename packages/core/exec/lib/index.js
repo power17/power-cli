@@ -23,6 +23,7 @@ async function exec() {
   const packageName = SETTINGS[cmdName]
   const packageVersion = 'latest'
   // 用户不指定路径就远程下载，如果本地有缓存 =》检查下版本是不是最新 =》不是最新九更新
+  console.log('targetPath', targetPath)
   if (!targetPath) {
     targetPath = path.resolve(homePath, CACHE_DIR) // 缓存路径
     storePath = path.resolve(targetPath, 'node_modules') // 缓存路径-node_modules
@@ -51,6 +52,7 @@ async function exec() {
     })
   }
   const rootFile = pkg.getRootFilePath()
+  log.verbose('rootFile1', rootFile,)
   if (rootFile) {
     // 加载对应的 命令包
     try {
