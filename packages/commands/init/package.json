@@ -31,6 +31,7 @@
     "@power-cli/log": "file:../../utils/log",
     "@power-cli/request": "file:../../utils/request",
     "@power-cli/utils": "file:../../utils/utils",
+    "@power-cli/package": "file:../../models/package",
     "ejs": "^3.1.9",
     "glob": "^10.2.5",
     "inquirer": "^8.0.0",

@@ -11,7 +11,7 @@ const log = require('@power-cli/log')
 const Command = require('@power-cli/command')
 const { spinnerStart } = require('@power-cli/utils')
 const getTemplateRequest = require('./getTemplateRequest');
-const Package = require('../../../models/package/lib');
+const Package = require('@power-cli/package');
 const TYPE_PROJECT = 'type_project'
 const TYPE_COMMONENT = 'type_commonent'
 
