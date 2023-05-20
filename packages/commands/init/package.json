@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/init",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "project init command",
   "author": "powr <1410837981@qq.com>",
   "homepage": "https://github.com/power17/power-cli#readme",
@@ -29,9 +29,9 @@
   "dependencies": {
     "@power-cli/command": "file:../../models/command",
     "@power-cli/log": "file:../../utils/log",
+    "@power-cli/package": "file:../../models/package",
     "@power-cli/request": "file:../../utils/request",
     "@power-cli/utils": "file:../../utils/utils",
-    "@power-cli/package": "file:../../models/package",
     "ejs": "^3.1.9",
     "glob": "^10.2.5",
     "inquirer": "^8.0.0",
