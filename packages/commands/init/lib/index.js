@@ -2,6 +2,7 @@
 const fs = require('fs')
 const { homedir } = require('os')
 const path = require('path')
+const cp = require('child_process')
 const inquirer = require('inquirer')
 const semver = require('semver')
 const ejs = require('ejs')
@@ -13,6 +14,7 @@ const getTemplateRequest = require('./getTemplateRequest');
 const Package = require('../../../models/package/lib');
 const TYPE_PROJECT = 'type_project'
 const TYPE_COMMONENT = 'type_commonent'
+
 const userHome = homedir()
 
 class InitCommand extends Command {
@@ -50,7 +52,8 @@ class InitCommand extends Command {
             throw new Error('项目模版不存在')
           }
         } else if (this.templateInfo.type === 'custom') {
-          console.log('自定义安装')
+          await this.insatallCustomTemplate()
+
         } else {
           throw new Error('无法识别项目类型')
         }
@@ -62,6 +65,46 @@ class InitCommand extends Command {
         console.log(e)
       }
     }
+  }
+  async insatallCustomTemplate() {
+    if (this.templateNpm.exists()) {
+      const rootFile = this.templateNpm.getRootFilePath()
+      if (fs.existsSync(rootFile)) {
+        const templatePath = path.resolve(this.templateNpm.storePath);
+        const options = {
+          templateInfo: this.templateInfo,
+          projectInfo: this.projectInfo,
+          sourcePath: templatePath,
+          targetPath: process.cwd(),
+        };
+        log.verbose('templatePath', templatePath)
+
+        const code = `require('${rootFile}')(${JSON.stringify(options)})`;
+        // console.log(rootFile, 'rootFile')
+        // 子进程加载包
+        const child = cp.spawn('node', ['-e', code], {
+          cwd: process.cwd(),
+          stdio: 'inherit' // 绑定父类 
+        })
+        child.on('error', (e) => {
+          console.error(e.message)
+          process.exit(1)
+        })
+        child.on('exit', e => {
+          log.verbose('自定义模版：加载命令执行成功, 退出子进程' + e)
+        })
+        child.on('close', e => {
+          log.verbose('关闭' + e)
+
+        })
+      } else {
+        throw new Error('自定义模版入口文件不存在')
+      }
+
+    } else {
+      throw new Error('自定义模版不存在')
+    }
+
   }
   async ejsRender() {
 
@@ -79,7 +122,6 @@ class InitCommand extends Command {
       ejs.renderFile(filePath, this.projectInfo, {}, function (err, str) {
         if (err) throw new Error(err.message)
         fs.writeFileSync(filePath, str)
-        console.log(str)
       })
     })))
     // console.log(file)
@@ -201,59 +243,62 @@ class InitCommand extends Command {
         value: TYPE_COMMONENT
       }]
     })
+    const title = type === 'project' ? '项目' : '组件'
+    projectInfo = await inquirer.prompt([{
+      type: 'input',
+      name: 'projectName',
+      default: this.projectName,
+      message: `请输入${title}名称`,
+      validate(v) {
+        const r = /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/
+
+        const done = this.async();
+        setTimeout(function () {
+          if (!r.test(v)) {
+            done(`请输入正确${title}名称，如：aaa, aaa-bbb, aaa_bbb, aaa_b23`);
+            return;
+          }
+          done(null, true);
+        }, 0)
+      },
+      filter(v) {
+        return v
+      }
+    }, {
+      type: 'input',
+      name: 'projectVersion',
+      message: `请输入${title}版本`,
+      default: '1.0.0',
+      validate(v) {
+        // return !!semver.valid(v)
+        const done = this.async();
+        setTimeout(function () {
+          if (!semver.valid(v)) {
+            done('请输入正确版本号，如：x.x.x');
+            return;
+          }
+          done(null, true);
+        }, 0)
+
+      },
+      filter(v) {
+        return semver.valid(v) ? semver.valid(v) : v
+      }
+    }, {
+      type: 'list',
+      name: 'npmName',
+      message: `请选择${title}模版`,
+      default: '1.0.0',
+      choices: this.getTemplateList()
+    },
+    ])
+    this.template.filter(v => v.tag?.includes(type))
     // 获取基本信息
     if (type === TYPE_PROJECT) {
-      projectInfo = await inquirer.prompt([{
-        type: 'input',
-        name: 'projectName',
-        default: this.projectName,
-        message: '请输入项目名称',
-        validate(v) {
-          const r = /^[a-zA-Z]+([-][a-zA-Z][a-zA-Z0-9]*|[_][a-zA-Z][a-zA-Z0-9]*|[a-zA-Z0-9])*$/
 
-          const done = this.async();
-          setTimeout(function () {
-            if (!r.test(v)) {
-              done('请输入正确项目名称，如：aaa, aaa-bbb, aaa_bbb, aaa_b23');
-              return;
-            }
-            done(null, true);
-          }, 0)
-        },
-        filter(v) {
-          return v
-        }
-      }, {
-        type: 'input',
-        name: 'projectVersion',
-        message: '请输入项目版本',
-        default: '1.0.0',
-        validate(v) {
-          // return !!semver.valid(v)
-          const done = this.async();
-          setTimeout(function () {
-            if (!semver.valid(v)) {
-              done('请输入正确版本号，如：x.x.x');
-              return;
-            }
-            done(null, true);
-          }, 0)
 
-        },
-        filter(v) {
-          return semver.valid(v) ? semver.valid(v) : v
-        }
-      }, {
-        type: 'list',
-        name: 'npmName',
-        message: '请选择项目模版',
-        default: '1.0.0',
-        choices: this.getTemplateList()
-      },
-      ])
-      return projectInfo
     }
-
+    return projectInfo
   }
   getTemplateList() {
     return this.template.map(t => ({
