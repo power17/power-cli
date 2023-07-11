@@ -28,6 +28,10 @@
   },
   "dependencies": {
     "@power-cli/command": "file:../../models/command",
-    "@power-cli/init": "file:../init"
+    "@power-cli/init": "file:../init",
+    "inquirer": "^8.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0"
   }
 }
