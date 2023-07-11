@@ -114,7 +114,6 @@ class InitCommand extends Command {
       ignore: ['node_modules/**', 'public/**'],
       nodir: true
     })
-    console.log('file', files)
     await Promise.all(files.map((file => {
       const filePath = path.resolve(dir, file)
       this.projectInfo.className = this.projectInfo.projectName
@@ -129,7 +128,6 @@ class InitCommand extends Command {
   }
   async normalInstall() {
     try {
-      console.log(this.projectName, 'this.projectName')
       const copyPath = path.resolve(this.templateNpm.storePath, this.templateNpm.pkgName, 'template')
       const targetPath = path.resolve(process.cwd(), this.projectName)
       fs.mkdirSync(targetPath)

@@ -65,6 +65,12 @@ function registerCommand() {
     .option('-f, --force', '是否强制初始化项目')
     .showHelpAfterError()
     .action(exec)
+    // 代码复用  
+  program
+    .command('add [templateName]')
+    .option('-f, --force', '是否强制代码')
+    .showHelpAfterError()
+    .action(exec)
   // 调试模式 
   program.on('option:debug', () => {
     if (program.opts().debug) {
