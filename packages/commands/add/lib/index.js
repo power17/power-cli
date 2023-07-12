@@ -11,6 +11,7 @@ const { glob } = require("glob")
 const ejs = require("ejs")
 const pkgUp = require("pkg-up")
 const { execSync } = require("child_process")
+const semver = require("semver")
 
 const PAGE_TEMPLATE = [
   {
@@ -90,7 +91,12 @@ class AddCommand extends Command {
     temArr.forEach((temDep) => {
       const findDep = tarArr.find((tarDep) => tarDep.key === temDep.key)
       if (findDep) {
-        log.verbose("找到重复以来依赖", findDep)
+        log.verbose("查询到重复依赖", findDep)
+        const templateRange = semver.validRange(temDep.value).split("<")[1]
+        const targetRange = semver.validRange(findDep.value).split("<")[1]
+        if (templateRange !== targetRange) {
+          log.warn(`${temDep.key}冲突， ${temDep.value} => ${findDep.value}`)
+        }
       } else {
         arr.push(temDep)
       }
