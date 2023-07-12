@@ -1,14 +1,14 @@
-'use strict';
-const path = require('path')
-const fs = require('fs')
-const { isObject, formatPath, spinnerStart } = require('@power-cli/utils')
-const pkgDir = require('pkg-dir')
-const npminstall = require('npminstall')
-const { getDefaultRegistry, getNewVersion } = require('@power-cli/get-npm-info')
+"use strict"
+const path = require("path")
+const fs = require("fs")
+const { isObject, formatPath } = require("@power-cli/utils")
+const pkgDir = require("pkg-dir")
+const npminstall = require("npminstall")
+const { getDefaultRegistry, getNewVersion } = require("@power-cli/get-npm-info")
 class Package {
   constructor(options = {}) {
     if (!isObject(options)) {
-      throw new Error('Package类的options参数必须是对象')
+      throw new Error("Package类的options参数必须是对象")
     }
     // package路径
     this.targetPath = options.targetPath
@@ -25,23 +25,20 @@ class Package {
       if (!fs.existsSync(this.storePath)) {
         fs.mkdir(this.storePath, { recursive: true }, (err) => {
           if (err) {
-            console.error('缓存目录创建成功')
+            console.error("缓存目录创建成功")
           }
         })
       }
-      if (this.packageVersion === 'latest') {
+      if (this.packageVersion === "latest") {
         this.packageVersion = await getNewVersion(this.packageName)
       }
-      console.log('storePath', this.storePath)
+      console.log("storePath", this.storePath)
       return fs.existsSync(path.resolve(this.storePath, this.pkgName))
-
     } else {
       return fs.existsSync(this.targetPath)
     }
-
-
   }
-  async insatall() {
+  async install() {
     return await npminstall({
       // install root dir
       root: path.resolve(this.targetPath),
@@ -50,12 +47,10 @@ class Package {
       pkgs: [
         {
           name: this.pkgName,
-          version: this.pkgVersion
+          version: this.pkgVersion,
         },
       ],
-
-    });
-
+    })
   }
   async update() {
     const lastVersion = await getNewVersion(this.pkgName)
@@ -69,17 +64,17 @@ class Package {
         pkgs: [
           {
             name: this.pkgName,
-            version: lastVersion
+            version: lastVersion,
           },
         ],
-
-      });
+      })
       this.packageVersion = lastVersion
     }
   }
   // 获取缓存包的版本
   getSpecificCacheFilePath() {
-    const pkg = require(path.resolve(this.storePath, this.pkgName, 'package.json')) || {}
+    const pkg =
+      require(path.resolve(this.storePath, this.pkgName, "package.json")) || {}
     return pkg.version
   }
   getRootFilePath() {
@@ -89,7 +84,7 @@ class Package {
       const dir = pkgDir.sync(targetPath)
       if (dir) {
         // 读取package.json
-        const pkgFile = require(path.resolve(dir, 'package.json'))
+        const pkgFile = require(path.resolve(dir, "package.json"))
         // 入口路径
         if (pkgFile?.main) {
           // 兼容window
@@ -102,14 +97,15 @@ class Package {
       return _getRootFile(this.cacheFilePath)
     } else {
       return _getRootFile(this.targetPath)
-
     }
-
   }
   get cacheFilePath() {
-    const pkg = require(path.resolve(this.storePath, this.pkgName, 'package.json'))
+    const pkg = require(path.resolve(
+      this.storePath,
+      this.pkgName,
+      "package.json"
+    ))
     return path.resolve(this.storePath, this.pkgName, pkg.main)
-
   }
 }
-module.exports = Package;
+module.exports = Package
