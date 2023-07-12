@@ -29,6 +29,9 @@
   "dependencies": {
     "@power-cli/command": "file:../../models/command",
     "@power-cli/init": "file:../init",
+    "@power-cli/log": "file:../../utils/log",
+    "@power-cli/package": "file:../../models/package",
+    "@power-cli/utils": "file:../../utils/utils",
     "inquirer": "^8.0.0"
   },
   "devDependencies": {
