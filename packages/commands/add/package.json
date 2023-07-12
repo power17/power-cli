@@ -34,7 +34,8 @@
     "@power-cli/utils": "file:../../utils/utils",
     "ejs": "^3.1.9",
     "glob": "^10.3.3",
-    "inquirer": "^8.0.0"
+    "inquirer": "^8.0.0",
+    "pkg-up": "^3.1.0"
   },
   "devDependencies": {
     "eslint": "^8.44.0"
