@@ -21,6 +21,16 @@ const PAGE_TEMPLATE = [
     targetPath: "src/views/Home",
   },
 ]
+const SECTION_TEMPLATE = [
+  {
+    name: "Vue2代码片段",
+    npmName: "imooc-cli-dev-template-section-vue",
+    version: "latest",
+  },
+]
+const ADD_MODE_SECTION = "section"
+const ADD_MODE_PAGE = "page"
+
 process.on("unhandledRejection", (e) => {
   log.error(e)
 })
@@ -29,17 +39,80 @@ class AddCommand extends Command {
     console.log("init")
   }
   async exec() {
+    // 1、 代码片段
+    const { addMode } = await this.getAddMode()
+    this.addMode = addMode
+    if (this.addMode === "section") {
+      // 代码片段
+      await this.installSectionTemplate()
+    } else {
+      // 页面模版
+      await this.installPageTemplate()
+    }
+  }
+  async installSectionTemplate() {
     // 1、获取页面安装文件夹
     this.dir = process.cwd()
+    // 2、 选择代码片段
+    this.pageTemplate = await this.getTemplate(ADD_MODE_SECTION)
+    // 检查
+    await this.prepare(ADD_MODE_SECTION)
+    // 代码片段下载
+    await this.downloadTemplate()
+    // 代码片段安装
+    await this.installSection()
+  }
+  async installSection() {
+    // 选择要插入的源码文件
+    const files = fs.readdirSync(this.dir, { withFileTypes: true }) // 读取文件类型
 
+    console.log(files)
+    // 需要用户输入行数
+    const { lineNumber } = await inquirer.prompt({
+      type: "input",
+      message: "请输入要插入的行数",
+      name: "lineNumber",
+      validate(value) {
+        const done = this.async()
+        if (!value || !value.trim()) {
+          done("请输入要插入的行数")
+          return
+        } else if (value >= 0 && Math.floor(value) === Number(value)) {
+          done(null, true)
+        } else {
+          done("插入的行数必须是整数")
+        }
+      },
+    })
+  }
+  async installPageTemplate() {
+    // 1、获取页面安装文件夹
+    this.dir = process.cwd()
     // 2、 选择页面模版
-    this.pageTemplate = await this.getPageTemplate()
+    this.pageTemplate = await this.getTemplate(ADD_MODE_PAGE)
     // 3、安装模版
     // 检查
-    await this.prepare()
+    await this.prepare(ADD_MODE_PAGE)
     await this.downloadTemplate()
     // 4、安装模版
     await this.installTemplate()
+  }
+  async getAddMode() {
+    return inquirer.prompt({
+      type: "list",
+      message: "请选择代码添加模式",
+      name: "addMode",
+      choices: [
+        {
+          name: "代码片段",
+          value: ADD_MODE_SECTION,
+        },
+        {
+          name: "页面模版",
+          value: ADD_MODE_PAGE,
+        },
+      ],
+    })
   }
   transformArr(obj) {
     const result = Object.entries(obj).map((item) => {
@@ -67,7 +140,6 @@ class AddCommand extends Command {
       templateDepdenciesArr,
       targetDepdenciesArr
     )
-    console.log(newDep, "newDep")
     // 写入target package里
     newDep.forEach((item) => {
       targetPkg.dependencies[item.key] = item.value
@@ -76,9 +148,9 @@ class AddCommand extends Command {
       encoding: "utf-8",
     })
     // 自动安装依赖
-    log.info("正在安装页面模版依赖")
+    log.info("正在安装模板依赖")
     await this.exeCommand("npm install", path.dirname(targetPkgPath))
-    log.success("安装页面模版依赖成功")
+    log.success("安装模板依赖成功")
   }
   async exeCommand(command, cwd) {
     execSync(command, {
@@ -156,9 +228,18 @@ class AddCommand extends Command {
     // 5、依赖合并
     await this.dependenciesMerge({ templatePath, targetPath })
   }
-  async prepare() {
+  async prepare(addMode) {
     //  最终拷贝的路径
-    this.targetPath = path.resolve(this.dir, this.pageTemplate.pageName)
+    if (addMode === ADD_MODE_PAGE) {
+      this.targetPath = path.resolve(this.dir, this.pageTemplate.pageName)
+    } else {
+      this.targetPath = path.resolve(
+        this.dir,
+        "components",
+        this.pageTemplate.pageName
+      )
+    }
+    console.log(this.targetPath)
     if (fs.existsSync(this.targetPath)) {
       throw new Error("页面模版已存在")
     }
@@ -171,7 +252,7 @@ class AddCommand extends Command {
 
     // 构建package
     const { npmName, version } = this.pageTemplate
-    const spinner = spinnerStart("正在下载页面模版")
+    const spinner = spinnerStart("正在下载模板")
     const pageTemplatePackage = new Package({
       targetPath,
       storePath: storeDir,
@@ -187,7 +268,7 @@ class AddCommand extends Command {
       } finally {
         spinner.stop(true)
         if (await pageTemplatePackage.exists()) {
-          log.success("下载页面模板成功")
+          log.success("下载模板成功")
         }
       }
     } else {
@@ -198,20 +279,23 @@ class AddCommand extends Command {
       } finally {
         spinner.stop(true)
         if (await pageTemplatePackage.exists()) {
-          log.success("更新页面模板成功")
+          log.success("更新模板成功")
         }
       }
     }
     this.pageTemplatePackage = pageTemplatePackage
   }
-  async getPageTemplate() {
+  async getTemplate(addMode) {
+    const name = addMode === ADD_MODE_PAGE ? "页面模板" : "代码片段"
+    const TEMPLATE =
+      addMode === ADD_MODE_PAGE ? PAGE_TEMPLATE : SECTION_TEMPLATE
     const { pageTemplateName } = await inquirer.prompt({
       type: "list",
       name: "pageTemplateName",
-      message: "请选择页面模版",
-      choices: this.createChoices(),
+      message: "请选择" + name,
+      choices: this.createChoices(addMode),
     })
-    const pageTemplate = PAGE_TEMPLATE.find((item) => {
+    const pageTemplate = TEMPLATE.find((item) => {
       return item.name === pageTemplateName
     })
     if (!pageTemplate) {
@@ -220,7 +304,7 @@ class AddCommand extends Command {
     const { pageName } = await inquirer.prompt({
       type: "input",
       name: "pageName",
-      message: "请输入页面名称",
+      message: "请输入" + name + "名称",
       default: "",
       validate(value) {
         const done = this.async()
@@ -235,13 +319,20 @@ class AddCommand extends Command {
     log.verbose(pageTemplate, "pageTemplate")
     return pageTemplate
   }
-  createChoices() {
-    return PAGE_TEMPLATE.map((item) => {
-      return {
-        name: item.name,
-        npmName: item.npmName,
-      }
-    })
+  createChoices(addMode) {
+    return addMode === ADD_MODE_PAGE
+      ? PAGE_TEMPLATE.map((item) => {
+          return {
+            name: item.name,
+            npmName: item.npmName,
+          }
+        })
+      : SECTION_TEMPLATE.map((item) => {
+          return {
+            name: item.name,
+            npmName: item.npmName,
+          }
+        })
   }
 }
 function add(argv) {
