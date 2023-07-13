@@ -64,9 +64,21 @@ class AddCommand extends Command {
   }
   async installSection() {
     // 选择要插入的源码文件
-    const files = fs.readdirSync(this.dir, { withFileTypes: true }) // 读取文件类型
+    let files = fs.readdirSync(this.dir, { withFileTypes: true }) // 读取文件类型
+    files = files
+      .map((file) => (file.isFile() ? file.name : null))
+      .filter((item) => item)
+    files = files.map((file) => ({ name: file, value: file }))
+    if (files.length === 0) {
+      throw new Error("该文件夹下没有目录")
+    }
+    const { codeFile } = await inquirer.prompt({
+      type: "list",
+      message: "请选择要插入代码片段的源码文件",
+      name: "codeFile",
+      choices: files,
+    })
 
-    console.log(files)
     // 需要用户输入行数
     const { lineNumber } = await inquirer.prompt({
       type: "input",
@@ -84,6 +96,33 @@ class AddCommand extends Command {
         }
       },
     })
+    log.verbose("codeFile", codeFile)
+    log.verbose("lineNumber", lineNumber)
+    // 读取源码文件分割成数组
+    const codeFilePath = path.resolve(this.dir, codeFile)
+    const codeContent = fs.readFileSync(codeFilePath, "utf-8")
+    const codeContentArr = codeContent.split("\n")
+    // 插入代码片段
+    const componentName = this.pageTemplate.pageName.toLocaleLowerCase()
+    codeContentArr.splice(
+      lineNumber,
+      0,
+      `<${componentName}></${componentName}>`
+    )
+    // 插入import语句
+    const componentNameOriginal = this.pageTemplate.pageName
+    const scriptIndex = codeContentArr.findIndex(
+      (code) => code.replace(/\s/g, "") === "<script>"
+    )
+    codeContentArr.splice(
+      scriptIndex + 1,
+      0,
+      `import ${componentNameOriginal} from './component/${componentNameOriginal}/index.vue`
+    )
+    log.verbose(codeContentArr)
+    const newCodeContent = codeContentArr.join("\n")
+    fs.writeFileSync(codeFilePath, newCodeContent, "utf-8")
+    log.success("代码写入成功")
   }
   async installPageTemplate() {
     // 1、获取页面安装文件夹
@@ -316,7 +355,7 @@ class AddCommand extends Command {
       },
     })
     pageTemplate.pageName = pageName.trim()
-    log.verbose(pageTemplate, "pageTemplate")
+    log.verbose(JSON.stringify(pageTemplate, null, 2), "pageTemplate")
     return pageTemplate
   }
   createChoices(addMode) {
