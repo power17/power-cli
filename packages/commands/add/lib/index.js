@@ -26,8 +26,16 @@ const SECTION_TEMPLATE = [
     name: "Vue2代码片段",
     npmName: "imooc-cli-dev-template-section-vue",
     version: "latest",
+    targetPath: "",
+  },
+  {
+    name: "vue2代码片段webpack处理过",
+    npmName: "imooc-cli-dev-template-section-vue-template",
+    version: "latest",
+    targetPath: "src/",
   },
 ]
+
 const ADD_MODE_SECTION = "section"
 const ADD_MODE_PAGE = "page"
 
@@ -117,12 +125,28 @@ class AddCommand extends Command {
     codeContentArr.splice(
       scriptIndex + 1,
       0,
-      `import ${componentNameOriginal} from './component/${componentNameOriginal}/index.vue`
+      `import ${componentNameOriginal} from './components/${componentNameOriginal}/index.vue'`
     )
-    log.verbose(codeContentArr)
+    // 转化为字符串
     const newCodeContent = codeContentArr.join("\n")
     fs.writeFileSync(codeFilePath, newCodeContent, "utf-8")
     log.success("代码写入成功")
+
+    const templatePath = path.resolve(
+      this.pageTemplatePackage.storePath,
+      this.pageTemplatePackage.pkgName,
+      "template",
+      this.pageTemplate.targetPath
+    )
+    log.verbose("codeFilePath", codeFilePath)
+    log.verbose("tempaltePath", templatePath)
+    log.verbose("targetPath", this.targetPath)
+    fs.mkdirSync(this.targetPath, { recursive: true })
+    fs.cpSync(templatePath, this.targetPath, {
+      recursive: true, //拷贝文件夹
+      dereference: true, // 拷贝真实目录
+      force: false,
+    })
   }
   async installPageTemplate() {
     // 1、获取页面安装文件夹
