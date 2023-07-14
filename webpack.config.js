@@ -1,11 +1,14 @@
 const path = require('path');
+const { cleanWebpackPlugin } = require('clean-webpack-plugin');
+
 module.exports = {
   mode: 'production',
   entry: {
-    monitor: path.resolve(__dirname, './monitor.js'),
+    monitor: path.resolve(path.dirname(), './monitor.js'),
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(path.dirname(), './dist'),
   },
+  plugins: [new cleanWebpackPlugin()],
 };

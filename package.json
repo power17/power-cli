@@ -10,6 +10,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "clean-webpack-plugin": "^4.0.0",
+    "eslint": "^8.44.0",
     "webpack": "^5.88.1",
     "webpack-cli": "^5.1.4"
   }
