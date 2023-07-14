@@ -2,16 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta power-app-id="a123456">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>前端监控</title>
 </head>
-<div>busfsdf</div>
+<body power-page-id="b123456">
+<div id="app">hell</div>
 <script>
+ 
+
   window.onload = function() {
-    window.powerMonitor.sendPv()
+    const m = window.powerMonitor
+     m.registerBeforeCreateParams(() => {
+      console.log("create Param")
+    })
+    m.registerBeforeUpload((data) => {
+      return data + 1353
+    })
+    m.registerAfterUpload((data) => {
+      return data + 1353
+    })
+    m.registerOnError((e) => {
+      console.log(e)
+    })
+    m.sendPv()
+
+    // test
+    const observer = new IntersectionObserver((e) => {
+      console.log(e[0].target, e[0].intersectionRatio)
+    }, {})
+    observer.observe(document.getElementById('app'))
+   
   }
+ 
 </script>
-<body>
+
   
 </body>
 </html>
