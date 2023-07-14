@@ -12,8 +12,9 @@ const ejs = require("ejs")
 const pkgUp = require("pkg-up")
 const { execSync } = require("child_process")
 const semver = require("semver")
+const request = require("../../../utils/request/lib")
 
-const PAGE_TEMPLATE = [
+let PAGE_TEMPLATE = [
   {
     name: "VUe2首页模版",
     npmName: "imooc-cli-dev-template-page-vue2",
@@ -21,7 +22,7 @@ const PAGE_TEMPLATE = [
     targetPath: "src/views/Home",
   },
 ]
-const SECTION_TEMPLATE = [
+let SECTION_TEMPLATE = [
   {
     name: "Vue2代码片段",
     npmName: "imooc-cli-dev-template-section-vue",
@@ -43,8 +44,11 @@ process.on("unhandledRejection", (e) => {
   log.error(e)
 })
 class AddCommand extends Command {
-  init() {
-    console.log("init")
+  async init() {
+    const pageTemplateData = await this.getPageTemplate()
+    PAGE_TEMPLATE = pageTemplateData
+    const sectionTemplateData = await this.getSectionTemplate()
+    SECTION_TEMPLATE = sectionTemplateData
   }
   async exec() {
     // 1、 代码片段
@@ -57,6 +61,18 @@ class AddCommand extends Command {
       // 页面模版
       await this.installPageTemplate()
     }
+  }
+  async getPageTemplate() {
+    return request({
+      url: "/page/template",
+      method: "get",
+    })
+  }
+  getSectionTemplate() {
+    return request({
+      url: "/section/template",
+      method: "get",
+    })
   }
   async installSectionTemplate() {
     // 1、获取页面安装文件夹
@@ -352,6 +368,7 @@ class AddCommand extends Command {
     const name = addMode === ADD_MODE_PAGE ? "页面模板" : "代码片段"
     const TEMPLATE =
       addMode === ADD_MODE_PAGE ? PAGE_TEMPLATE : SECTION_TEMPLATE
+
     const { pageTemplateName } = await inquirer.prompt({
       type: "list",
       name: "pageTemplateName",
