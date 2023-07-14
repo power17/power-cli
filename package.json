@@ -2,34 +2,15 @@
   "name": "power-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "packages/core/cli/bin/index.js",
+  "main": "./dist/monitor.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  },
-  "workspaces": [
-    "packages/*",
-    "packages/core/*",
-    "packages/commands/*",
-    "packages/models/*",
-    "packages/utils/*"
-  ],
-  "dependencies": {
-    "@power-cli/command": "file:packages/models/command",
-    "@power-cli/core": "file:packages/core/cli",
-    "@power-cli/exec": "file:packages/core/exec",
-    "@power-cli/get-npm-info": "file:packages/utils/get-npm-info",
-    "@power-cli/init": "file:packages/commands/init",
-    "@power-cli/log": "file:packages/utils/log",
-    "@power-cli/package": "file:packages/models/package",
-    "@power-cli/utils": "file:packages/utils/utils"
-  },
   "devDependencies": {
-    "lerna": "^6.6.2"
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
   }
 }
