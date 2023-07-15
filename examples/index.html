@@ -5,11 +5,35 @@
   <meta power-app-id="a123456">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>前端监控</title>
+  <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+    .demo1{
+      width: 100%;
+      height: 100%;
+      background: red;
+    }
+    .demo2{
+      height: 100%;
+      background: yellow;
+    }
+  </style>
 </head>
 <body power-page-id="b123456">
-<div id="app">hell</div>
+<div class="demo1">hell</div>
+<div class="demo2" appear></div>
 <script>
- 
+  const demo2 = document.getElementsByClassName('demo2')
+  demo2[0].addEventListener('appear', (e) => {
+    console.log('appear on')
+    window.powerMonitor.sendExp({
+      a: 1,
+      b: 2
+    })
+
+  })
 
   window.onload = function() {
     const m = window.powerMonitor
@@ -27,11 +51,7 @@
     })
     m.sendPv()
 
-    // test
-    const observer = new IntersectionObserver((e) => {
-      console.log(e[0].target, e[0].intersectionRatio)
-    }, {})
-    observer.observe(document.getElementById('app'))
+
    
   }
  

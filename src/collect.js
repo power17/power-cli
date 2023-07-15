@@ -1,13 +1,12 @@
 import { upload } from './upload'
 import qs from 'qs'
-export const collect = () => {
-  console.log('collect')
-}
+
 let beforeCreateParams
 let beforeUpload
 let afterUpload
 let onError
-export const sendPv = () => {
+// 采集上报数据
+const collect = (customData, eventType) => {
   // 1、采集页面的基本信息
   //    a、应用ID
   //    b、页面ID
@@ -39,6 +38,7 @@ export const sendPv = () => {
     pageId,
     timestamp,
     ua,
+    ...customData,
   }
   let data = qs.stringify(params)
   //  data = `appId=${appId}&pageId=${pageId}&timestamp=${timestamp}&ua=${ua}`
@@ -46,12 +46,23 @@ export const sendPv = () => {
     data = beforeUpload(data)
   }
   try {
-    upload(data)
+    let url, uploadData
+    const ret = upload(data, { eventType })
+    url = ret.url
+    uploadData = ret.data
   } catch (e) {
     onError ? onError(e) : console.error(e)
   } finally {
     afterUpload && afterUpload()
   }
+}
+// 发送pv日志
+export const sendPv = () => {
+  collect({}, 'PV')
+}
+// 上报曝光埋点
+export const sendExp = (data) => {
+  collect(data, 'EXP')
 }
 
 export const registerBeforeCreateParams = (fn) => {
