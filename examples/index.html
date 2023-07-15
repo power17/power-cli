@@ -21,10 +21,17 @@
     }
   </style>
 </head>
+
 <body power-page-id="b123456">
+<a href="www.baidu.com" onClick="onJump()">跳转百度</a>
 <div class="demo1">hell</div>
 <div class="demo2" appear></div>
 <script>
+  const onJump = () => {
+    window.powerMonitor.sendClick({
+      url: 'www.baidu.com'
+    })
+  }
   const demo2 = document.getElementsByClassName('demo2')
   demo2[0].addEventListener('appear', (e) => {
     console.log('appear on')
@@ -36,6 +43,7 @@
   })
 
   window.onload = function() {
+   
     const m = window.powerMonitor
      m.registerBeforeCreateParams(() => {
       console.log("create Param")

@@ -5,6 +5,36 @@ let beforeCreateParams
 let beforeUpload
 let afterUpload
 let onError
+export const collectAppear = () => {
+  // 曝光
+  const appearEvent = new CustomEvent('appear')
+  const disappearEvent = new CustomEvent('disappear')
+  let observe
+  if (window.powerMonitorObserve) {
+    observe = window.powerMonitorObserve
+  } else {
+    observe = new IntersectionObserver((e) => {
+      for (let event of e) {
+        if (event.intersectionRatio > 0) {
+          event.target.dispatchEvent(appearEvent)
+        } else {
+          event.target.dispatchEvent(disappearEvent)
+        }
+      }
+    }, {})
+  }
+  let obList = []
+  const apper = document.querySelectorAll('[appear]')
+  Array.from(apper).forEach((item) => {
+    if (!obList.includes(item)) {
+      observe.observe(item)
+      obList.push(item)
+    }
+  })
+
+  window.powerMonitorObserve = observe
+  window.powerMonitorObserveList = obList
+}
 // 采集上报数据
 const collect = (customData, eventType) => {
   // 1、采集页面的基本信息
@@ -31,6 +61,7 @@ const collect = (customData, eventType) => {
   // 时间戳
   const timestamp = new Date().getTime()
   const ua = window.navigator.userAgent
+  const currentUrl = window.location.href
 
   // 3、调用日志上报API
   let params = {
@@ -38,6 +69,7 @@ const collect = (customData, eventType) => {
     pageId,
     timestamp,
     ua,
+    currentUrl,
     ...customData,
   }
   let data = qs.stringify(params)
@@ -46,23 +78,31 @@ const collect = (customData, eventType) => {
     data = beforeUpload(data)
   }
   try {
-    let url, uploadData
+    // let url, uploadData
     const ret = upload(data, { eventType })
-    url = ret.url
-    uploadData = ret.data
+    // url = ret.url
+    // uploadData = ret.data
   } catch (e) {
     onError ? onError(e) : console.error(e)
   } finally {
     afterUpload && afterUpload()
   }
 }
+export const sendClick = (data = {}) => {
+  console.log('click')
+  collect(data, 'CLICK')
+}
 // 发送pv日志
-export const sendPv = () => {
-  collect({}, 'PV')
+export const sendPv = (data = {}) => {
+  collect(data, 'PV')
 }
 // 上报曝光埋点
-export const sendExp = (data) => {
+export const sendExp = (data = {}) => {
   collect(data, 'EXP')
+}
+// 上报曝光埋点
+export const sendCustom = (data = {}) => {
+  collect(data, 'Custom')
 }
 
 export const registerBeforeCreateParams = (fn) => {
