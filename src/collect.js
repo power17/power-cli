@@ -37,7 +37,8 @@ export const collectAppear = () => {
   window.powerMonitorObserveList = obList
 }
 // 采集上报数据
-const collect = (customData, eventType) => {
+const collect = (customData, eventType, isSendBeacon = false) => {
+  console.log(eventType, isSendBeacon)
   // 1、采集页面的基本信息
   //    a、应用ID
   //    b、页面ID
@@ -63,16 +64,18 @@ const collect = (customData, eventType) => {
   const timestamp = new Date().getTime()
   const ua = window.navigator.userAgent
   const url = window.location.href
-  console.log(url, 'url')
 
   // 3、调用日志上报API
+  customData = customData ? JSON.stringify(customData) : JSON.stringify({})
+  // console.log(customData)
+  // return
   let params = {
     appId,
     pageId,
     timestamp,
     ua,
     url,
-    ...customData,
+    args: customData,
   }
   let data = qs.stringify(params, { charset: 'utf-8' })
 
@@ -83,7 +86,7 @@ const collect = (customData, eventType) => {
   try {
     // let url, uploadData
 
-    const ret = upload(data, { eventType })
+    const ret = upload(data, { eventType }, isSendBeacon)
     // url = ret.url
     // uploadData = ret.data
   } catch (e) {
@@ -91,6 +94,9 @@ const collect = (customData, eventType) => {
   } finally {
     afterUpload && afterUpload()
   }
+}
+export const sendStayTime = (data = {}) => {
+  collect(data, 'STAY', true)
 }
 export const sendClick = (data = {}) => {
   console.log('click')

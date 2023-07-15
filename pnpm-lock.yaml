@@ -1,6 +1,9 @@
 lockfileVersion: '6.0'
 
 dependencies:
+  nanoid:
+    specifier: ^4.0.2
+    version: 4.0.2
   qs:
     specifier: ^6.11.2
     version: 6.11.2
@@ -1876,6 +1879,12 @@ packages:
       dns-packet: 5.6.0
       thunky: 1.1.0
     dev: true
+
+  /nanoid@4.0.2:
+    resolution: {integrity: sha512-7ZtY5KTCNheRGfEFxnedV5zFiORN1+Y1N6zvPTnHQd8ENUvfaDBeuJDZb2bN/oXwXxu3qkTXDzy57W5vAmDTBw==}
+    engines: {node: ^14 || ^16 || >=18}
+    hasBin: true
+    dev: false
 
   /natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
