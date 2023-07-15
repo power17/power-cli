@@ -23,3 +23,8 @@ window.powerMonitor = {
   sendClick,
   sendCustom,
 }
+
+// 曝光统计
+window.addEventListener('load', () => {
+  collectAppear()
+})

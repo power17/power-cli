@@ -42,26 +42,26 @@
 
   })
 
-  window.onload = function() {
-   
+ window.addEventListener('load',  function () {
+
     const m = window.powerMonitor
-     m.registerBeforeCreateParams(() => {
-      console.log("create Param")
-    })
-    m.registerBeforeUpload((data) => {
-      return data + 1353
-    })
-    m.registerAfterUpload((data) => {
-      return data + 1353
-    })
-    m.registerOnError((e) => {
-      console.log(e)
-    })
+    // m.registerBeforeCreateParams(() => {
+    //   console.log("create Param")
+    // })
+    // m.registerBeforeUpload((data) => {
+    //   return data
+    // })
+    // m.registerAfterUpload((data) => {
+    //   return data
+    // })
+    // m.registerOnError((e) => {
+    //   console.log(e)
+    // })
     m.sendPv()
 
 
-   
-  }
+
+  })
  
 </script>
 

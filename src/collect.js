@@ -5,6 +5,7 @@ let beforeCreateParams
 let beforeUpload
 let afterUpload
 let onError
+// 曝光统计
 export const collectAppear = () => {
   // 曝光
   const appearEvent = new CustomEvent('appear')
@@ -61,7 +62,8 @@ const collect = (customData, eventType) => {
   // 时间戳
   const timestamp = new Date().getTime()
   const ua = window.navigator.userAgent
-  const currentUrl = window.location.href
+  const url = window.location.href
+  console.log(url, 'url')
 
   // 3、调用日志上报API
   let params = {
@@ -69,16 +71,18 @@ const collect = (customData, eventType) => {
     pageId,
     timestamp,
     ua,
-    currentUrl,
+    url,
     ...customData,
   }
-  let data = qs.stringify(params)
+  let data = qs.stringify(params, { charset: 'utf-8' })
+
   //  data = `appId=${appId}&pageId=${pageId}&timestamp=${timestamp}&ua=${ua}`
   if (beforeUpload) {
     data = beforeUpload(data)
   }
   try {
     // let url, uploadData
+
     const ret = upload(data, { eventType })
     // url = ret.url
     // uploadData = ret.data

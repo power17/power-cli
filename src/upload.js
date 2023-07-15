@@ -4,11 +4,11 @@
  * @param {*} options 附加属性
  * eventType: PV EXP CLICK CUSTOM
  */
-export const upload = (data, options = {}) => {
+export const upload = (param, options = {}) => {
   let img = new Image()
-  const param = encodeURIComponent(data)
+  // const param = encodeURIComponent(data)
   const { eventType = 'PV' } = options
-  img.src = 'http://www.imooc.com?data=' + param + `&eventType=${eventType}`
+  img.src = 'http://localhost:7001/monitor/upload?' + param + `&eventType=${eventType}`
 
   console.log(param, img.src)
   img = null //内存释放
