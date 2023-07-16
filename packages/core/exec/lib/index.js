@@ -41,7 +41,7 @@ async function exec() {
       await pkg.update()
     } else {
       // 安装pkg
-      await pkg.insatall()
+      await pkg.install()
     }
   } else {
     // 本地包

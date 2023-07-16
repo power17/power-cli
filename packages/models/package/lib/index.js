@@ -32,7 +32,7 @@ class Package {
       if (this.packageVersion === "latest") {
         this.packageVersion = await getNewVersion(this.packageName)
       }
-      console.log("storePath", this.storePath)
+
       return fs.existsSync(path.resolve(this.storePath, this.pkgName))
     } else {
       return fs.existsSync(this.targetPath)
@@ -78,7 +78,7 @@ class Package {
     return pkg.version
   }
   getRootFilePath() {
-    console.log(this.targetPath)
+
     const _getRootFile = (targetPath) => {
       // 找到package.json的目录
       const dir = pkgDir.sync(targetPath)

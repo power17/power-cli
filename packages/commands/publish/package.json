@@ -30,6 +30,7 @@
     "url": "https://github.com/power17/power-cli/issues"
   },
   "dependencies": {
-    "@power-cli/command": "file:../../models/command"
+    "@power-cli/command": "file:../../models/command",
+    "@power-cli/log": "file:../../utils/log"
   }
 }

@@ -318,7 +318,6 @@ class AddCommand extends Command {
         this.pageTemplate.pageName
       )
     }
-    console.log(this.targetPath)
     if (fs.existsSync(this.targetPath)) {
       throw new Error("页面模版已存在")
     }

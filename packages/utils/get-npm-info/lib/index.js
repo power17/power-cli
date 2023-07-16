@@ -22,19 +22,18 @@ function getDefaultRegistry(isOrigin = false) {
 }
 async function getNpmVersion(pkgName, registry) {
   const data = await getNpmInfo(pkgName) || {}
-  // console.log('data', data)
+
   return data.versions? Object.keys(data.versions) : ""
 }
 async function getNewVersion(pkgName, registry) {
   const data = await getNpmInfo(pkgName) || {}
-  // console.log('data', data)
+
   return data['dist-tags']?.latest
 }
 // 获取满足版本号 （废弃）
 function getSemverVersion(baseVersion, versions = []){
   versions = versions.filter(version => semver.satisfies(version, `^${baseVersion}`))
-  // console.log(ver)
-  console.log(versions)
+
   return versions
 }
 

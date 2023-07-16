@@ -25,7 +25,7 @@ class InitCommand extends Command {
     log.verbose(':projectName:', this.projectName)
     log.verbose('force:', this.force)
 
-    // console.log(this.projectName, this.force,1111)
+  
   }
   async exec() {
 
@@ -80,7 +80,6 @@ class InitCommand extends Command {
         log.verbose('templatePath', templatePath)
 
         const code = `require('${rootFile}')(${JSON.stringify(options)})`;
-        // console.log(rootFile, 'rootFile')
         // 子进程加载包
         const child = cp.spawn('node', ['-e', code], {
           cwd: process.cwd(),
