@@ -16,7 +16,6 @@ export const upload = (param, options = {}, isSendBeacon = false) => {
   if (!userId) {
     userId = visitorId
   }
-
   const { eventType = 'PV' } = options
   const src = 'http://localhost:7001/monitor/upload?' + param + `&eventType=${eventType}&userId=${userId}&visitorId=${visitorId}`
   if (isSendBeacon) {

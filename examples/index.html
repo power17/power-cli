@@ -23,46 +23,27 @@
 </head>
 
 <body power-page-id="b123456">
-<a href="www.baidu.com" onClick="onJump()">跳转百度</a>
+<a href="www.baidu.com" power-mod-id="baiduJump" onClick="onJump(this)">跳转百度</a>
 <div class="demo1">hell</div>
-<div class="demo2" appear></div>
+<div class="demo2" appear power-mod-id="power12434"></div>
 <script>
   
-  const onJump = () => {
+  const onJump = (target) => {
     window.powerMonitor.sendClick({
-      url: 'www.baidu.com'
-    })
+      jumpUrl: 'www.baidu.com'
+    },{target})
   }
   const demo2 = document.getElementsByClassName('demo2')
   demo2[0].addEventListener('appear', (e) => {
     console.log('appear on')
-    window.powerMonitor.sendExp({
-      a: 1,
-      b: 2
-    })
+    window.powerMonitor.sendExp({}, e)
 
   })
 
- window.addEventListener('load',  function () {
+  // window.onload = () => {
+  //   window.performance.mark('onload')
+  // }
 
-    const m = window.powerMonitor
-    // m.registerBeforeCreateParams(() => {
-    //   console.log("create Param")
-    // })
-    // m.registerBeforeUpload((data) => {
-    //   return data
-    // })
-    // m.registerAfterUpload((data) => {
-    //   return data
-    // })
-    // m.registerOnError((e) => {
-    //   console.log(e)
-    // })
-    m.sendPv()
-
-
-
-  })
  
 </script>
 

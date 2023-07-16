@@ -37,8 +37,7 @@ export const collectAppear = () => {
   window.powerMonitorObserveList = obList
 }
 // 采集上报数据
-const collect = (customData, eventType, isSendBeacon = false) => {
-  console.log(eventType, isSendBeacon)
+const collect = (customData, eventType, isSendBeacon = false, e = {}) => {
   // 1、采集页面的基本信息
   //    a、应用ID
   //    b、页面ID
@@ -64,17 +63,23 @@ const collect = (customData, eventType, isSendBeacon = false) => {
   const timestamp = new Date().getTime()
   const ua = window.navigator.userAgent
   const url = window.location.href
+  // module id
+  let modId = ''
+
+  if (e.target) {
+    modId = e.target.getAttribute('power-mod-id')
+  }
+  console.log(modId, 'modId', e)
 
   // 3、调用日志上报API
   customData = customData ? JSON.stringify(customData) : JSON.stringify({})
-  // console.log(customData)
-  // return
   let params = {
     appId,
     pageId,
     timestamp,
     ua,
     url,
+    modId,
     args: customData,
   }
   let data = qs.stringify(params, { charset: 'utf-8' })
@@ -98,17 +103,25 @@ const collect = (customData, eventType, isSendBeacon = false) => {
 export const sendStayTime = (data = {}) => {
   collect(data, 'STAY', true)
 }
-export const sendClick = (data = {}) => {
-  console.log('click')
-  collect(data, 'CLICK')
+// 性能统计
+export const sendPerformance = (data = {}) => {
+  collect(data, 'PERF', true)
+}
+// 点击统计
+export const sendClick = (data = {}, e) => {
+  collect(data, 'CLICK', true, e)
 }
 // 发送pv日志
 export const sendPv = (data = {}) => {
   collect(data, 'PV')
 }
 // 上报曝光埋点
-export const sendExp = (data = {}) => {
-  collect(data, 'EXP')
+export const sendExp = (data = {}, e) => {
+  const modId = e.target.getAttribute('power-mod-id')
+  if (!modId) {
+    console.error('appear属性缺少power-mod-id')
+  }
+  collect(data, 'EXP', false, e)
 }
 // 上报曝光埋点
 export const sendCustom = (data = {}) => {

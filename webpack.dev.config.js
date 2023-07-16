@@ -27,6 +27,8 @@ module.exports = {
       filename: 'index.html',
       template: path.resolve(path.dirname('./'), './examples/index.html'),
       Chunk: ['monitor'],
+      scriptLoading: 'blocking', // 性能监控需要同步
+      inject: 'head', // 性能监控需要在头部
     }),
   ],
 }
