@@ -103,6 +103,10 @@ const collect = (customData, eventType, isSendBeacon = false, e = {}) => {
 export const sendStayTime = (data = {}) => {
   collect(data, 'STAY', true)
 }
+// 错误统计
+export const sendError = (data = {}) => {
+  collect(data, 'ERROR')
+}
 // 性能统计
 export const sendPerformance = (data = {}) => {
   collect(data, 'PERF', true)

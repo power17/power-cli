@@ -10,6 +10,7 @@ import {
   sendCustom,
   sendStayTime,
   sendPerformance,
+  sendError,
 } from './collect'
 import { upload } from './upload'
 
@@ -26,6 +27,7 @@ window.powerMonitor = {
   sendCustom,
   sendStayTime,
   sendPerformance,
+  sendError,
 }
 
 // 曝光统计
@@ -79,3 +81,19 @@ const observe = new PerformanceObserver(callback)
 observe.observe({
   entryTypes: ['paint', 'largest-contentful-paint', 'mark'],
 })
+// 异常监控
+// 全局脚本异常
+window.onerror = (errMsg, file, line, col, err) => {
+  console.log({ err }, errMsg, file, line, col)
+  const stack = err.stack
+  const message = err.message
+  sendError({ stack, message, type: 'script' })
+}
+// 全局promise异常
+window.onunhandledrejection = (e) => {
+  console.log(e)
+  const stack = e.reason.stack
+  const message = e.reason.message || e.reason
+  console.log(stack, message)
+  sendError({ stack, message, type: 'promise' })
+}
