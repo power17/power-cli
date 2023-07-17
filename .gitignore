@@ -6,4 +6,5 @@ lerna-debug.log
 .DS_Store
 home
 monitor
+test
 .env
