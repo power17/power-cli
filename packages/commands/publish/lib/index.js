@@ -15,6 +15,7 @@ class PublishCommand extends Command {
     // 2、git flow 自动化
     const git = new Git(this._cmd, this.projectInfo)
     await git.init()
+    await git.commit()
     // 3、云构建和云发布
     const endTime = new Date()
     log.info(`发布耗时:${endTime - startTime}`)

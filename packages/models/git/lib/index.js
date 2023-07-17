@@ -3,6 +3,7 @@ const simpleGit = require('simple-git')
 const log = require('@power-cli/log')
 const { spinnerStart } = require('@power-cli/utils')
 const path = require('path')
+const semver = require('semver')
 const { homedir } = require('os')
 const fs = require('fs')
 const inquirer = require('inquirer')
@@ -82,6 +83,51 @@ class Git {
     await this.prepare() //检查缓存路径
 
     // console.log(buffer, 'this.fi', this.filePath)
+  }
+  async commit() {
+    // 1.生成开发分支
+    await this.getCorrectVersion()
+  }
+  async getCorrectVersion() {
+    // 1.获取远程分布分支
+    // 版本号规范：release/x.y.z，dev/x.y.z
+    // 版本号递增规范：major/minor/patch
+    log.info('获取代码分支')
+    const remoteBranchList = await this.getRemoteBranchList(VERSION_RELEASE)
+    let releaseVersion = null
+    if (remoteBranchList && remoteBranchList.length > 0) {
+      releaseVersion = remoteBranchList[0]
+    }
+    log.verbose('线上最新版本号', releaseVersion)
+  }
+  async getRemoteBranchList(type) {
+    // git ls-remote --refs
+    const remoteList = await this.git.listRemote(['--refs'])
+    let reg
+    if (type === VERSION_RELEASE) {
+      // refs/tags/release1.0.20 匹配
+      reg = /.+?refs\/tags\/release\/(\d+\.\d+\.\d+)/g
+    } else {
+      reg = /.+?refs\/heads\/dev\/(\d+\.\d+\.\d+)/g
+    }
+    return remoteList
+      .split('\n')
+      .map((remote) => {
+        const match = reg.exec(remote)
+        reg.lastIndex = 0 // 大于字符串长度将不在执行
+        if (match && semver.valid(match[1])) {
+          return match[1]
+        }
+      })
+      .filter((_) => _)
+      .sort((a, b) => {
+        // 目的降序
+        if (semver.lte(b, a)) {
+          if (a === b) return 0
+          return -1 //降序
+        }
+        return 1
+      })
   }
 
   async prepare() {
