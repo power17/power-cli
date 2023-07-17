@@ -7,7 +7,6 @@ class GiteeRequest {
   constructor(token, type = 'github') {
     this.token = token
     this.type = type
-    console.log(this.type, 'type')
     let baseUrl = null
     if (this.type === 'github') {
       baseUrl = GITHUB_BASE_URL
@@ -35,12 +34,13 @@ class GiteeRequest {
       },
       (error) => {
         if (error.response.status !== 200) {
-          log.error(
+          log.warn(
             this.type,
-            `请求接口失败,http: ${error.response.status}`,
+            `请求接口失败,http: ${error.response.status || error}`,
             error.response.data.message
           )
-          return
+          // log.verbose(JSON.stringify(error.response.data, null, 2))
+          return null
         }
         if (error.response && error.response.data) {
           return error.response
