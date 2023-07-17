@@ -123,9 +123,8 @@ class Git {
       await this.pullRemoteRepo('master', {
         '--allow-unrelated-histories': null,
       })
-    } else {
-      await this.pushRemoteRepo('master')
     }
+    await this.pushRemoteRepo('master')
   }
   async pushRemoteRepo(branchName) {
     // log.info(`推送代码至${branchName}分支`);
