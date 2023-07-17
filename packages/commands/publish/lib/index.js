@@ -3,13 +3,18 @@ const Command = require("@power-cli/command")
 const log = require("@power-cli/log")
 const path = require('path')
 const fs = require('fs')
+const Git = require("@power-cli/git")
 class PublishCommand extends Command {
   init() {
-    console.log("init")
+    console.log("publish init")
   }
   exec() {
     const startTime = new Date()
+    // 1、初始化检查
     this.prepare()
+    // 2、git flow 自动化
+    const git = new Git(this._cmd,this.projectInfo,)
+    // 3、云构建和云发布
     const endTime = new Date()
     log.info(`发布耗时:${endTime - startTime}`)
   }
@@ -27,6 +32,7 @@ class PublishCommand extends Command {
     if (!fs.existsSync(pkgPath)) {
       throw new Error('package.json不存在')
     }
+    this.projectInfo = {name, version, dir: cwd}
     
   }
 }

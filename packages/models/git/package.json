@@ -1,9 +1,10 @@
 {
-  "name": "@power-cli/publish",
+  "name": "@power-cli/git",
   "version": "1.0.28",
-  "description": "> TODO: description",
+  "description": "git操作创建类",
   "keywords": [
-    "publish"
+    "git",
+    "operation"
   ],
   "author": "power <1410837981@qq.com>",
   "homepage": "https://github.com/power17/power-cli#readme",
@@ -24,14 +25,14 @@
     "url": "git+https://github.com/power17/power-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@power-cli/publish.test.js"
+    "test": "node ./__tests__/@power-cli/git.test.js"
   },
   "bugs": {
     "url": "https://github.com/power17/power-cli/issues"
   },
   "dependencies": {
-    "@power-cli/command": "file:../../models/command",
-    "@power-cli/git": "file:../../models/git",
-    "@power-cli/log": "file:../../utils/log"
+    "@power-cli/log": "file:../../utils/log",
+    "inquirer": "8.2.4",
+    "simple-git": "^3.19.1"
   }
 }

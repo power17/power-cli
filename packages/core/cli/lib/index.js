@@ -65,7 +65,9 @@ function registerCommand() {
     .showHelpAfterError()
     .action(exec)
   // 发布命令
-  program.command("publish []").showHelpAfterError().action(exec)
+  program.command("publish []")
+    .option('--refresh', '强制更新远程地址仓库')
+    .showHelpAfterError().action(exec)
   // 调试模式
   program.on("option:debug", () => {
     if (program.opts().debug) {
