@@ -105,7 +105,6 @@ class Git {
   }
   async initAndAddRemote() {
     log.info('执行git初始化')
-    console.log(this.git)
     await this.git.init(this.dir)
     log.info('添加git remote')
     const remotes = await this.git.getRemotes()
@@ -123,9 +122,8 @@ class Git {
       await this.pullRemoteRepo('master', {
         '--allow-unrelated-histories': null,
       })
-    } else {
-      await this.pushRemoteRepo('master')
     }
+    await this.pushRemoteRepo('master')
   }
   async pushRemoteRepo(branchName) {
     // log.info(`推送代码至${branchName}分支`);
