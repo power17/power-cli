@@ -121,7 +121,7 @@ class Git {
     if (await this.checkRemoteMaster()) {
       // 拉取master分支
       await this.pullRemoteRepo('master', {
-        '--allow-unrelated-histories': null,
+        '--allow-unrelated-histories': null, //历史记录不一样的远程分支和本地合并
       })
     } else {
       await this.pushRemoteRepo('master')
@@ -139,6 +139,7 @@ class Git {
     })
   }
   async checkRemoteMaster() {
+    // git ls-remote 远程分支
     return (
       (await this.git.listRemote(['--refs'])).indexOf('refs/heads/master') >= 0
     )
@@ -147,11 +148,11 @@ class Git {
     const status = await this.git.status()
     // 是否有代码没提交
     if (
-      status.not_added.length > 0 ||
-      status.created.length > 0 ||
-      status.deleted.length > 0 ||
-      status.modified.length > 0 ||
-      status.renamed.length > 0
+      status.not_added.length > 0 || // 工作区中存在但是还没有被添加到 git 中的文件
+      status.created.length > 0 || // 新建的但是还没有被添加到 git 中的文件列表
+      status.deleted.length > 0 || //已经被删除但是还没有被提交到 git 中的文件
+      status.modified.length > 0 || // 已经被修改但是还没有被提交到 git 中的文件列表
+      status.renamed.length > 0 // 已经被重命名但是还没有被提交到 git 中的文件列表
     ) {
       log.verbose('status', status)
       await this.git.add(status.not_added)
@@ -160,6 +161,7 @@ class Git {
       await this.git.add(status.modified)
       await this.git.add(status.renamed)
       let message
+      // 防止commit的信息为空的情况，当没有输入commit信息时会一直处于输入commit的状态。
       while (!message) {
         message = (
           await inquirer.prompt({
