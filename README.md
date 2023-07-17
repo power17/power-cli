@@ -27,3 +27,9 @@ lerna link convert
   },
   ```
 
+  ```sh
+  which nginx
+  nginx -V
+  
+  ```
+
