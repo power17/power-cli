@@ -68,6 +68,8 @@ function registerCommand() {
   program
     .command('publish []')
     .option('--refreshServer', '强制更新远程地址仓库')
+    .option('--refreshToken', '强制更新远程仓库token')
+    .option('--refreshOwner', '强制更新远程仓库组织')
     .showHelpAfterError()
     .action(exec)
   // 调试模式

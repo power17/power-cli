@@ -1,3 +1,4 @@
+// 父类
 class GitServer {
   constructor(type, token) {
     this.type = type
