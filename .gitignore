@@ -1,0 +1,10 @@
+node_modules/
+.vscode
+.idea
+packages/**/node_modules
+lerna-debug.log
+.DS_Store
+home
+monitor
+test
+.env
