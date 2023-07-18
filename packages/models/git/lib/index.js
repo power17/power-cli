@@ -329,7 +329,6 @@ class Git {
     // 如果有.git文件，就终止
     if (!isHaveGitWarehouse) {
       await this.initAndAddRemote();
-      return;
     }
     // 初始化.git
 
