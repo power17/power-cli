@@ -488,7 +488,6 @@ pnpm-debug.log*
     } else {
       log.success('远程仓库信息获取成功');
     }
-
     this.repo = repo;
   }
   async checkGitOwner() {
