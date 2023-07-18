@@ -175,12 +175,13 @@ function checkPkgVersion() {
 }
 // 全局错误处理
 process.on('unhandledRejection', (reason, p) => {
-  //我刚刚捕获了一个未处理的promise rejection, 因为我们已经有了对于未处理错误的后备的处理机制（见下面）, 直接抛出，让它来处理
-  console.error(p)
+  //我刚刚捕获了一个未处理的promise rejection,
+  console.log('unhandledRejection', reason, p)
   throw reason
 })
 process.on('uncaughtException', (error) => {
   //我刚收到一个从未被处理的错误，现在处理它，并决定是否需要重启应用
+  console.log('uncaughtException', error)
   throw error
 })
 
