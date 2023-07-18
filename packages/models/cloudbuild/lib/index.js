@@ -55,6 +55,9 @@ class CloudBuild {
           prod: this.prod,
         },
       });
+      socket.on('test', (msg) => {
+        console.log(msg);
+      });
       socket.on('connect', () => {
         clearTimeout(this.timer);
         const { id } = socket;
