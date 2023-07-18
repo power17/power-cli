@@ -329,6 +329,7 @@ class Git {
     // 如果有.git文件，就终止
     if (!isHaveGitWarehouse) {
       await this.initAndAddRemote();
+      return;
     }
     // 初始化.git
 
@@ -411,16 +412,12 @@ class Git {
     const gitPath = path.resolve(this.dir, GIT_ROOT_DIR);
     this.remote = this.gitServer.getRemote(this.login, this.name);
     if (fs.existsSync(gitPath)) {
-      this.git.raw(
-        ['remote', 'set-url', 'origin', this.remote],
-        (err, data) => {
-          if (err) {
-            console.error('SetUrl failed: ', err);
-          } else {
-            console.log('Done!');
-          }
+      // 重新选择git或者gitee时需要修改远程地址 todo
+      this.git.raw(['remote', 'set-url', 'origin', this.remote], (err) => {
+        if (err) {
+          console.error('SetUrl failed: ', err);
         }
-      );
+      });
       // await this.git.removeRemote();
       // await this.git.addRemote('origin', this.remote);
       log.success('git已完成初始化');
