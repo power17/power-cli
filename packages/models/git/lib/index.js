@@ -141,7 +141,7 @@ class Git {
     const stashList = await this.git.stashList()
     if (stashList.all.length > 0) {
       await this.git.stash(['pop'])
-      log.success('stash pop成功')
+      log.warn('git stash pop,将会把stash代码提交')
     }
   }
   async getCorrectVersion() {
