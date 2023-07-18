@@ -285,9 +285,8 @@ class Git {
       await this.pullRemoteRepo('master', {
         '--allow-unrelated-histories': null, //历史记录不一样的远程分支和本地合并
       })
-    } else {
-      await this.pushRemoteRepo('master')
     }
+    await this.pushRemoteRepo('master')
   }
   async pushRemoteRepo(branchName) {
     // log.info(`推送代码至${branchName}分支`);
