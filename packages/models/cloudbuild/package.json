@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@power-cli/git": "file:../git",
+    "@power-cli/request": "file:../../utils/request",
     "socket.io-client": "^2.0.0"
   }
 }

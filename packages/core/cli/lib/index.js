@@ -70,7 +70,7 @@ function registerCommand() {
     .option('--refreshServer', '强制更新远程地址仓库')
     .option('--refreshToken', '强制更新远程仓库token')
     .option('--refreshOwner', '强制更新远程仓库组织')
-    .option('--buildCmd', '自定义打包命令')
+    .option('--buildCmd <buildCmd>', '自定义打包命令')
     .showHelpAfterError()
     .action(exec);
   // 调试模式

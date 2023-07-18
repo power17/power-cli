@@ -84,7 +84,6 @@ class Git {
     this.repo = null; // 远程仓库信息
     this.branch = null; // 本地开发分支
     this.buildCmd = cmd.buildCmd; //自定义打包命令
-    log.info('buildCmd', cmd.buildCmd);
   }
   async init() {
     await this.prepare(); //检查缓存路径
@@ -120,11 +119,13 @@ class Git {
   }
   async publish() {
     await this.preparePublish();
-
-    let buildCmd = 'npm run build';
     const cloudBuild = new CloudBuild(this, {
-      buildCmd,
+      type: this.gitPublish,
+      // prod: this.prod,
     });
+    await cloudBuild.prepare();
+    await cloudBuild.init();
+    ret = await cloudBuild.build();
   }
   async preparePublish() {
     log.info('开始进行云构建前代码检查');
@@ -142,7 +143,7 @@ class Git {
     } else {
       this.buildCmd = 'npm run build';
     }
-    log.verbose(this.buildCmd);
+    log.verbose('buildCmd', this.buildCmd);
     const buildCmdArray = this.buildCmd.split(' ');
     const lastCmd = buildCmdArray[buildCmdArray.length - 1];
     if (!pkg.scripts || !Object.keys(pkg.scripts).includes(lastCmd)) {
@@ -150,7 +151,7 @@ class Git {
     }
     log.success('代码预检查通过');
     const gitPublishPath = path.resolve(this.rootDir, GIT_PUBLISH_FILE);
-    let gitPublish = fs.readFileSync(gitPublishPath);
+    let gitPublish = null;
     if (!fs.existsSync(gitPublishPath)) {
       gitPublish = (
         await inquirer.prompt({
