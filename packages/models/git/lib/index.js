@@ -2,6 +2,9 @@
 const simpleGit = require('simple-git');
 const log = require('@power-cli/log');
 const { spinnerStart } = require('@power-cli/utils');
+const CloudBuild = require('@power-cli/cloudbuild');
+const pkg = require(`${process.cwd()}/package.json`);
+
 const path = require('path');
 const semver = require('semver');
 const { homedir } = require('os');
@@ -80,11 +83,23 @@ class Git {
     this.login = null; // 远程仓库登录名
     this.repo = null; // 远程仓库信息
     this.branch = null; // 本地开发分支
+    this.buildCmd = cmd.buildCmd; //自定义打包命令
   }
   async init() {
     await this.prepare(); //检查缓存路径
 
     // console.log(buffer, 'this.fi', this.filePath)
+  }
+  async prepare() {
+    this.checkHomePath();
+    await this.checkGitServer(GIT_SERVER_FILE); //检查用户远程仓库类型git还是gitee
+    await this.checkGitToken(); // 检查用户git token
+    await this.getUserAndOrgs(); // 获取远程长裤用户信息
+    await this.checkGitOwner(); // 检查远程仓库组织和个人
+    await this.checkRepo(); // 检查并创建是否存在远程仓库
+    this.checkGitIgnore(); // 检查并创建.gitignore文件
+    await this.checkComponent(); // 组件合法性检查
+    await this.initGit(); // 完成本地仓库初始化
   }
   async commit() {
     // 1.生成开发分支
@@ -101,6 +116,59 @@ class Git {
     await this.pullRemoteMasterAndBranch();
     // 7.将开发分支推送到远程仓库
     await this.pushRemoteRepo(this.branch);
+  }
+  async publish() {
+    await this.preparePublish();
+
+    let buildCmd = 'npm run build';
+    const cloudBuild = new CloudBuild(this, {
+      buildCmd,
+    });
+  }
+  async preparePublish() {
+    log.info('开始进行云构建前代码检查');
+    // 用户传进来的自定义打包命令
+    if (this.buildCmd) {
+      const buildCmdArray = this.buildCmd.split(' ');
+      // 安全检查，防止执行有害命令
+      if (
+        buildCmdArray[0] !== 'npm' &&
+        buildCmdArray[0] !== 'cnpm' &&
+        buildCmdArray[0] !== 'pnpm'
+      ) {
+        throw new Error('Build命令非法,必须使用npm或cnpm！');
+      }
+    } else {
+      this.buildCmd = 'npm run build';
+    }
+    log.verbose(this.buildCmd);
+    const buildCmdArray = this.buildCmd.split(' ');
+    const lastCmd = buildCmdArray[buildCmdArray.length - 1];
+    if (!pkg.scripts || !Object.keys(pkg.scripts).includes(lastCmd)) {
+      throw new Error(this.buildCmd + '命令不存在！');
+    }
+    log.success('代码预检查通过');
+    const gitPublishPath = path.resolve(this.rootDir, GIT_PUBLISH_FILE);
+    let gitPublish = fs.readFileSync(gitPublishPath);
+    if (!fs.existsSync(gitPublishPath)) {
+      gitPublish = (
+        await inquirer.prompt({
+          type: 'list',
+          choices: GIT_PUBLISH_TYPE,
+          message: '请选择您想要上传代码的平台',
+          name: 'gitPublish',
+        })
+      ).gitPublish;
+      fs.writeFileSync(gitPublishPath, gitPublish, { flag: 'w' });
+      log.success(
+        'git publish类型写入成功',
+        `${gitPublish} -> ${gitPublishPath}`
+      );
+    } else {
+      gitPublish = fs.readFileSync(gitPublishPath, 'utf-8');
+      log.success('git publish类型获取成功', gitPublish);
+    }
+    this.gitPublish = gitPublish;
   }
 
   async pullRemoteMasterAndBranch() {
@@ -213,7 +281,6 @@ class Git {
     }
   }
   syncVersionToPackageJson() {
-    const pkg = require(`${this.dir}/package.json`);
     if (pkg && pkg.version !== this.version) {
       pkg.version = this.version;
       fs.writeFileSync(
@@ -252,17 +319,6 @@ class Git {
       });
   }
 
-  async prepare() {
-    this.checkHomePath();
-    await this.checkGitServer(GIT_SERVER_FILE); //检查用户远程仓库类型git还是gitee
-    await this.checkGitToken(); // 检查用户git token
-    await this.getUserAndOrgs(); // 获取远程长裤用户信息
-    await this.checkGitOwner(); // 检查远程仓库组织和个人
-    await this.checkRepo(); // 检查并创建是否存在远程仓库
-    this.checkGitIgnore(); // 检查并创建.gitignore文件
-    await this.checkComponent(); // 组件合法性检查
-    await this.initGit(); // 完成本地仓库初始化
-  }
   async initGit() {
     // 如果有.git文件，就终止
     if (await this.getRemote()) {
@@ -295,7 +351,7 @@ class Git {
     await this.pushRemoteRepo('master');
   }
   async pushRemoteRepo(branchName) {
-    // log.info(`推送代码至${branchName}分支`);
+    log.info(`推送代码至${branchName}分支`);
     await this.git.push('origin', branchName);
     log.success('推送代码成功');
   }
