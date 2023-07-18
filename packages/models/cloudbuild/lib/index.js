@@ -60,6 +60,7 @@ class CloudBuild {
         const { id } = socket;
         log.success('云构建任务创建成功', `任务ID: ${id}`);
         socket.on(id, (msg) => {
+          console.log(msg, '收到服务器消息');
           const parsedMsg = this.parseMsg(msg);
           log.success(parsedMsg.action, parsedMsg.message);
         });
@@ -155,16 +156,5 @@ class CloudBuild {
     }
   }
 }
-// or http://127.0.0.1:7001/chat
 
-// const socket = io('http://127.0.0.1:7001');
-
-// socket.on('connect', () => {
-//   console.log('connect!');
-//   socket.emit('/', 'hello world!');
-// });
-
-// socket.on('res', (msg) => {
-//   console.log('res from server: %s!', msg);
-// });
 module.exports = CloudBuild;

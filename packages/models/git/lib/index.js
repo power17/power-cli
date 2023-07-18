@@ -125,7 +125,7 @@ class Git {
     });
     await cloudBuild.prepare();
     await cloudBuild.init();
-    ret = await cloudBuild.build();
+    const ret = await cloudBuild.build();
   }
   async preparePublish() {
     log.info('开始进行云构建前代码检查');
