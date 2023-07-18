@@ -1,0 +1,48 @@
+{
+  "name": "@power-cli/core",
+  "version": "1.0.27",
+  "description": "power-cli core",
+  "repository": "https://github.com/power17/power-cli",
+  "keywords": [
+    "custom",
+    "cli"
+  ],
+  "bin": {
+    "power": "bin/index.js"
+  },
+  "author": "powr <1410837981@qq.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "bin/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "dependencies": {
+    "@power-cli/exec": "file:../../utils/exec",
+    "@power-cli/get-npm-info": "file:../../utils/get-npm-info",
+    "@power-cli/init": "file:../../utils/init",
+    "@power-cli/log": "file:../../utils/log",
+    "@power-cli/utils": "file:../../utils/utils",
+    "colors": "^1.4.0",
+    "commander": "^10.0.1",
+    "dotenv": "^16.0.3",
+    "import-local": "^3.1.0",
+    "npmlog": "^7.0.1",
+    "root-check": "^2.0.0",
+    "semver": "^7.5.0"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node ./__tests__/core.test.js"
+  },
+  "exports": {
+    "./bin/index.js": "./bin/index.js"
+  },
+  "gitHead": "cfcb55963a9ee67eff1be68af095ba4def45b678"
+}
