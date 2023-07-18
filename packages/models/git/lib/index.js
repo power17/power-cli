@@ -407,10 +407,22 @@ class Git {
     }
     log.success('代码冲突检查通过');
   }
-  getRemote() {
+  async getRemote() {
     const gitPath = path.resolve(this.dir, GIT_ROOT_DIR);
     this.remote = this.gitServer.getRemote(this.login, this.name);
     if (fs.existsSync(gitPath)) {
+      this.git.raw(
+        ['remote', 'set-url', 'origin', this.remote],
+        (err, data) => {
+          if (err) {
+            console.error('SetUrl failed: ', err);
+          } else {
+            console.log('Done!');
+          }
+        }
+      );
+      // await this.git.removeRemote();
+      // await this.git.addRemote('origin', this.remote);
       log.success('git已完成初始化');
       return true;
     }
