@@ -64,11 +64,12 @@ const GIT_PUBLISH_TYPE = [
   },
 ]
 class Git {
-  constructor(cmd, { name, dir }) {
+  constructor(cmd, { name, dir, version }) {
     this.homePath =
       process.env.CLI_HOME_PATH || path.resolve(homedir(), DEFAULT_CLI_HOME) // 用户目录 /user/home/.power-cli
     this.rootDir = path.resolve(this.homePath, GIT_ROOT_DIR) // 存储目录.git文件夹 /user/home/.power-cli/.git
     this.git = simpleGit() // git操作
+    this.version = version //项目版本号
     this.cmd = cmd // 刷新token或git仓库类型
     this.gitServer = null
     this.dir = dir // 源码目录
@@ -78,6 +79,7 @@ class Git {
     this.owner = null // 远程仓库组织
     this.login = null // 远程仓库登录名
     this.repo = null // 远程仓库信息
+    this.branch = null // 本地开发分支
   }
   async init() {
     await this.prepare() //检查缓存路径
@@ -87,6 +89,60 @@ class Git {
   async commit() {
     // 1.生成开发分支
     await this.getCorrectVersion()
+    // 2.检查stash区
+    await this.checkStash()
+    // 3.检查代码冲突
+    await this.checkConflicted()
+    // 4.检查未提交代码
+    await this.checkNotCommitted()
+    // 5.切换开发分支
+    await this.checkoutBranch(this.branch)
+    // 6.合并远程master分支和开发分支代码
+    await this.pullRemoteMasterAndBranch()
+    // 7.将开发分支推送到远程仓库
+    await this.pushRemoteRepo(this.branch)
+  }
+
+  async pullRemoteMasterAndBranch() {
+    log.info(`拉取远程[master] -> [${this.branch}]`)
+    await this.pullRemoteRepo('master')
+    log.success('拉取远程 [master] 分支代码成功')
+    await this.checkConflicted()
+    log.info('检查远程开发分支')
+    // 获取远程分支版本（降序)
+    const remoteBranchList = await this.getRemoteBranchList()
+    if (remoteBranchList.indexOf(this.version) >= 0) {
+      // 如果有这个版本，就拉取
+      log.info(`拉取 [${this.branch}] -> [${this.branch}]`)
+      await this.pullRemoteRepo(this.branch)
+      log.success(`拉取远程 [${this.branch}] 分支代码成功`)
+      await this.checkConflicted()
+    }
+  }
+  async pullRemoteRepo(branchName, options) {
+    log.info(`同步远程${branchName}分支代码`)
+    await this.git.pull('origin', branchName, options).catch((err) => {
+      log.error(err.message)
+    })
+  }
+  async checkoutBranch(branch) {
+    const localBranchList = await this.git.branchLocal()
+    if (localBranchList.all.indexOf(branch) >= 0) {
+      // 切换分支
+      await this.git.checkout(branch)
+    } else {
+      // 新建分支
+      await this.git.checkoutLocalBranch(branch)
+    }
+    log.success(`分支切换到${branch}`)
+  }
+  async checkStash() {
+    log.info('检查stash记录')
+    const stashList = await this.git.stashList()
+    if (stashList.all.length > 0) {
+      await this.git.stash(['pop'])
+      log.success('stash pop成功')
+    }
   }
   async getCorrectVersion() {
     // 1.获取远程分布分支
@@ -99,6 +155,66 @@ class Git {
       releaseVersion = remoteBranchList[0]
     }
     log.verbose('线上最新版本号', releaseVersion)
+    // 2.生成本地开发分支
+    const devVersion = this.version
+    if (!releaseVersion) {
+      // 没有远程版本号，此项目没有上线
+      this.branch = `${VERSION_DEVELOP}/${devVersion}`
+    } else if (semver.gt(this.version, releaseVersion)) {
+      // 当前版本大于线上最新版本 正常开发
+      log.info('当前版本大于线上最新版本', `${devVersion} >= ${releaseVersion}`)
+      this.branch = `${VERSION_DEVELOP}/${devVersion}`
+    } else {
+      // 当前版本大于等于本地版本，刚从线上拉取
+      log.info('当前线上版本大于本地版本', `${releaseVersion} > ${devVersion}`)
+      const incType = (
+        await inquirer.prompt({
+          type: 'list',
+          name: 'incType',
+          message: '自动升级版本，请选择升级版本类型',
+          default: 'patch',
+          choices: [
+            {
+              name: `小版本（${releaseVersion} -> ${semver.inc(
+                releaseVersion,
+                'patch'
+              )}）`,
+              value: 'patch',
+            },
+            {
+              name: `中版本（${releaseVersion} -> ${semver.inc(
+                releaseVersion,
+                'minor'
+              )}）`,
+              value: 'minor',
+            },
+            {
+              name: `大版本（${releaseVersion} -> ${semver.inc(
+                releaseVersion,
+                'major'
+              )}）`,
+              value: 'major',
+            },
+          ],
+        })
+      ).incType
+      // semver.inc('1.2.3', 'prerelease', 'beta')
+      // '1.2.4-beta.0'
+      const incVersion = semver.inc(releaseVersion, incType)
+      // 生成开发版本 dev/1.0.2
+      this.branch = `${VERSION_DEVELOP}/${incVersion}`
+      this.version = incVersion
+      log.verbose('本地开发分支', this.branch)
+      // 3.将version同步到package.json
+      this.syncVersionToPackageJson()
+    }
+  }
+  syncVersionToPackageJson() {
+    const pkg = require(`${this.dir}/package.json`)
+    if (pkg && pkg.version !== this.version) {
+      pkg.version = this.version
+      fs.writeFileSync(`${this.dir}/package.json`, JSON.stringify(pkg, null, 2))
+    }
   }
   async getRemoteBranchList(type) {
     // git ls-remote --refs
@@ -142,11 +258,12 @@ class Git {
     await this.initGit() // 完成本地仓库初始化
   }
   async initGit() {
-    const isHaveRemote = await this.getRemote()
-    if (!isHaveRemote) {
-      // 初始化提交
-      await this.initAndAddRemote()
+    // 如果有.git文件，就终止
+    if (await this.getRemote()) {
+      return
     }
+    // 初始化.git
+    await this.initAndAddRemote()
     await this.initCommit()
   }
   async initAndAddRemote() {
@@ -177,12 +294,7 @@ class Git {
     await this.git.push('origin', branchName)
     log.success('推送代码成功')
   }
-  async pullRemoteRepo(branchName, options) {
-    log.info(`同步远程${branchName}分支代码`)
-    await this.git.pull('origin', branchName, options).catch((err) => {
-      log.error(err.message)
-    })
-  }
+
   async checkRemoteMaster() {
     // git ls-remote 远程分支
     return (
