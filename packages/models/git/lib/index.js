@@ -84,6 +84,7 @@ class Git {
     this.repo = null; // 远程仓库信息
     this.branch = null; // 本地开发分支
     this.buildCmd = cmd.buildCmd; //自定义打包命令
+    log.info('buildCmd', cmd.buildCmd);
   }
   async init() {
     await this.prepare(); //检查缓存路径
