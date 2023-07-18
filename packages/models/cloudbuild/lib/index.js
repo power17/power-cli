@@ -55,13 +55,14 @@ class CloudBuild {
           prod: this.prod,
         },
       });
-      socket.on('test', (msg) => {
-        console.log(msg);
-      });
+
       socket.on('connect', () => {
         clearTimeout(this.timer);
         const { id } = socket;
         log.success('云构建任务创建成功', `任务ID: ${id}`);
+        socket.on('test', (msg) => {
+          console.log(msg);
+        });
         socket.on(id, (msg) => {
           console.log(msg, '收到服务器消息');
           const parsedMsg = this.parseMsg(msg);
