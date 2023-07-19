@@ -411,12 +411,12 @@ class Git {
     const gitPath = path.resolve(this.dir, GIT_ROOT_DIR);
     this.remote = this.gitServer.getRemote(this.login, this.name);
     if (fs.existsSync(gitPath)) {
-      // 重新选择git或者gitee时需要修改远程地址 todo
-      this.git.raw(['remote', 'set-url', 'origin', this.remote], (err) => {
-        if (err) {
-          console.error('SetUrl failed: ', err);
-        }
-      });
+      // 重新选择git或者gitee时需要修改远程地址
+      // this.git.raw(['remote', 'set-url', 'origin', this.remote], (err) => {
+      //   if (err) {
+      //     console.error('SetUrl failed: ', err);
+      //   }
+      // });
       // await this.git.removeRemote();
       // await this.git.addRemote('origin', this.remote);
       log.success('git已完成初始化');
