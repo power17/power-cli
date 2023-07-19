@@ -28,7 +28,7 @@ const REPO_OWNER_USER = 'user';
 const REPO_OWNER_ORG = 'org';
 const VERSION_RELEASE = 'release';
 const VERSION_DEVELOP = 'dev';
-const TEMPLATE_TEMP_DIR = 'oss';
+// const TEMPLATE_TEMP_DIR = 'oss';
 const COMPONENT_FILE = '.componentrc';
 
 const GIT_SERVER_TYPE = [
