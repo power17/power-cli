@@ -1,6 +1,6 @@
 {
   "name": "@power-cli/cloudbuild",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "description": "云构建",
   "keywords": [
     "cloud",
