@@ -93,6 +93,7 @@ class Git {
 
     // console.log(buffer, 'this.fi', this.filePath)
   }
+  // -------- 主流程开始 ----------
   async prepare() {
     this.checkHomePath();
     await this.checkGitServer(GIT_SERVER_FILE); //检查用户远程仓库类型git还是gitee
@@ -130,6 +131,8 @@ class Git {
     await cloudBuild.init();
     await cloudBuild.build();
   }
+ // -------- 主流程结束 ----------
+
   async preparePublish() {
     log.info('开始进行云构建前代码检查');
     // 用户传进来的自定义打包命令
@@ -410,6 +413,7 @@ class Git {
   async getRemote() {
     const gitPath = path.resolve(this.dir, GIT_ROOT_DIR);
     this.remote = this.gitServer.getRemote(this.login, this.name);
+    // 检查存在.git会产生bug todo
     if (fs.existsSync(gitPath)) {
       // 重新选择git或者gitee时需要修改远程地址
       // this.git.raw(['remote', 'set-url', 'origin', this.remote], (err) => {

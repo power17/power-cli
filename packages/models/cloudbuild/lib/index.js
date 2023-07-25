@@ -94,6 +94,7 @@ class CloudBuild {
     let ret = true;
     return new Promise((resolve, reject) => {
       this.socket.emit('build');
+      // 监听构建时的信息回传到脚手架， socket
       this.socket.on('build', (msg) => {
         const parsedMsg = this.parseMsg(msg);
         // 服务端异常处理

@@ -12,8 +12,8 @@ const Command = require('@power-cli/command')
 const { spinnerStart } = require('@power-cli/utils')
 const getTemplateRequest = require('./getTemplateRequest');
 const Package = require('@power-cli/package');
-const TYPE_PROJECT = 'type_project'
-const TYPE_COMMONENT = 'type_commonent'
+const TYPE_PROJECT = 'project'
+const TYPE_COMMONENT = 'component'
 
 const userHome = homedir()
 
@@ -241,6 +241,7 @@ class InitCommand extends Command {
       }]
     })
     const title = type === 'project' ? '项目' : '组件'
+    this.template = this.template.filter(v => v.tag?.includes(type))
     projectInfo = await inquirer.prompt([{
       type: 'input',
       name: 'projectName',
@@ -289,12 +290,10 @@ class InitCommand extends Command {
       choices: this.getTemplateList()
     },
     ])
-    this.template.filter(v => v.tag?.includes(type))
-    // 获取基本信息
-    if (type === TYPE_PROJECT) {
+    log.info(this.template, 'this.template')
 
-
-    }
+    
+   
     return projectInfo
   }
   getTemplateList() {
