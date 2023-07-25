@@ -15,7 +15,6 @@ const Package = require('@power-cli/package');
 const TYPE_PROJECT = 'project'
 const TYPE_COMMONENT = 'component'
 
-const userHome = homedir()
 
 class InitCommand extends Command {
   init() {
@@ -52,7 +51,7 @@ class InitCommand extends Command {
             throw new Error('项目模版不存在')
           }
         } else if (this.templateInfo.type === 'custom') {
-          await this.insatallCustomTemplate()
+          await this.installCustomTemplate()
 
         } else {
           throw new Error('无法识别项目类型')
@@ -66,7 +65,7 @@ class InitCommand extends Command {
       }
     }
   }
-  async insatallCustomTemplate() {
+  async installCustomTemplate() {
     if (this.templateNpm.exists()) {
       const rootFile = this.templateNpm.getRootFilePath()
       if (fs.existsSync(rootFile)) {
@@ -167,7 +166,7 @@ class InitCommand extends Command {
     } else {
       const spinner = spinnerStart('正在下载。。。。。')
       await new Promise((resolve) => setTimeout(resolve, 1000))
-      await this.templateNpm.insatall()
+      await this.templateNpm.install()
       spinner.stop()
 
 
@@ -290,7 +289,7 @@ class InitCommand extends Command {
       choices: this.getTemplateList()
     },
     ])
-    log.info(this.template, 'this.template')
+
 
     
    
